@@ -19,9 +19,9 @@
     #output {
       width: 200px;
       height: 200px;
-      position: relative;
+      /* position: relative; */
       > textarea, #result {
-        position: absolute;
+        /* position: absolute; */
         width: 100%;
         height: 100%;
         white-space: pre-wrap;
@@ -38,7 +38,7 @@
 <body>
   <div>
     <div>REGULAR EXPRESSION</div>
-    <input class="border" type="text" id="reInput">
+    <input class="border" type="text" id="reInput" value = '((.(.)(.))(..) )'>
     <button class="border" onclick="run()">RUN</button>
     <div>FLAGS</div>
     <label for=""><input type="checkbox" id="flag-g" checked>g</label>
@@ -52,7 +52,7 @@
     <div>TEST STRING</div>
     <div id="output">
       <div xstyle="border: 1px solid red;" id="result"></div>
-      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()">L aaaaa Lorem ipsum vero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa blanditiis eaque ea quibusdam, eius in nisi minus porro at. Commodi vero aaaaa labore vero alias fugiat vero fugit non  eveniet aaaaa porro! aaaaa ero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa 78 eggs 8 cows 1 pig 88888 eggs aaaaa aaaaa</textarea>
+      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()" >L aaaaa orem isum vero dolor sit, amet aaaa ctur adipisicing elit.  Vel aaaaa vero aaaaa blanditiis eaque ea quibusdam, eius in nisi minus porro at. Commodi vero aaaaa labore vero alias fugiat vero fugit non  eveniet aaaaa porro! aaaaa ero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa 78 eggs 8 cows 1 pig 88888 eggs aaaaa aaaaa</textarea>
     </div>
   </div>
   <script>
@@ -95,7 +95,6 @@
     function syncScroll() {
       result.scrollTop = testStringInput.scrollTop
     }
-
   </script>
 </body>
 </html>
