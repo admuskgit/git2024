@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>regex101</title>
   <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      background-color: gray;
+    }
     input, button {
       outline: auto;
     }
@@ -36,9 +42,9 @@
   </style>
 </head>
 <body>
-  <div>
+  <div class="container">
     <div>REGULAR EXPRESSION</div>
-    <input class="border" type="text" id="reInput" value = '((.(.)(.))(..) )'>
+    <input class="border" type="text" id="reInput" value = "(a(.)(..) )">
     <button class="border" onclick="run()">RUN</button>
     <div>FLAGS</div>
     <label for=""><input type="checkbox" id="flag-g" checked>g</label>
@@ -47,7 +53,7 @@
     <label for=""><input type="checkbox" id="flag-y">y</label>
     <label for=""><input type="checkbox" id="flag-u">u</label>
     <label for=""><input type="checkbox" id="flag-s">s</label>
-    <label for=""><input type="checkbox" id="flag-d">d</label>
+    <label for=""><input type="checkbox" id="flag-d" checked>d</label>
     <label for=""><input type="checkbox" id="flag-v">v</label>
     <div>TEST STRING</div>
     <div id="output">
@@ -57,34 +63,37 @@
   </div>
   <script>
     function run() {
-      var flags = getFlags()
-      var reString = reInput.value
+      let flags = getFlags()
+      let reString = reInput.value
+      let re
       try {
-        var re = new RegExp(reString, flags)
+        re = new RegExp(reString, flags)
       } catch(e) {
         if(e instanceof SyntaxError) {
           return
         }
       }
-      var testString = testStringInput.value
-      var html = ''
-      var match
-      var lastLastIndex = 0
+      let testString = testStringInput.value
+      let html = ''
+      let match
+      let lastLastIndex = 0
+      let matchIndex = 0
       while(match = re.exec(testString)) {
         html += testString.slice(lastLastIndex, match.index)
         if(match[0].length == 0) {
           re.lastIndex++
         }
-        html += `<em>${match[0]}</em>`
+        html += highLight(match, matchIndex)
         lastLastIndex = re.lastIndex
+        matchIndex++
       }
       html += testString.slice(lastLastIndex)
       result.innerHTML = html
     }
     function getFlags() {
-      var flags = ['g','m','i','y','u','s','d','v']
+      let flags = ['g','m','i','y','u','s','d','v']
       return flags.filter(it => {
-        var element = document.getElementById('flag-' + it)
+        let element = document.getElementById('flag-' + it)
         if(element.checked) {
           return true
         } else {
@@ -95,6 +104,30 @@
     function syncScroll() {
       result.scrollTop = testStringInput.scrollTop
     }
+    function highLight(match, matchIndex) {
+      let res = new Array(match[0].length + 1).fill('')
+      let groupindex = 0
+      for(let indexs of match.indices) {
+        let start = indexs[0] - match.index
+        let end = indexs[1] - match.index
+        let info = `
+        Math ${matchIndex}
+        ---
+        Group: ${groupindex}
+        Pos: ${indexs[0]}- ${indexs[1]}
+        `
+        res[start] += `<em title= '${info}'>`
+        res[end] = `</em>` + res[end]
+        groupindex++
+      }
+      let result = ''
+      for(let i = 0; i < match[0].length; i++) {
+        result += res[i] + match[0][i]
+      }
+      result += res[match[0].length]
+      return result
+    }
+
   </script>
 </body>
 </html>
