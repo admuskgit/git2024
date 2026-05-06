@@ -62,8 +62,19 @@
       [group-index='8'] {
         background-color: rgb(202, 185, 32);
       }
+      [group-index='9'] {
+        background-color: hotpink;
+      }
       em:not(:has(:hover)):hover {
         outline: 2px solid palegreen;
+      }
+      em:not(:has(:hover)):hover em {
+        background-color: inherit;
+      }
+      .zero-width {
+        border-left: 2px dotted red;
+        margin-left: -1px;
+        margin-right: -1px;
       }
     }
   </style>
@@ -71,7 +82,7 @@
 <body>
   <div class="container">
     <div>REGULAR EXPRESSION</div>
-    <input class="border" type="text" id="reInput" value = "(a(.)(..) )">
+    <input class="border" type="text" id="reInput" value = "(a(.)(..)a)">
     <button class="border" onclick="run()">RUN</button>
     <div>FLAGS</div>
     <label for=""><input type="checkbox" id="flag-g" checked>g</label>
@@ -132,6 +143,15 @@
       result.scrollTop = testStringInput.scrollTop
     }
     function highLight(match, matchIndex) {
+      if(match[0].length == 0) {
+        let info = [
+          `Math ${matchIndex}`,
+          `---`,
+          `Group 0: [empty string]`,
+          `Pos: ${match.index}- ${match.index}`,
+        ].join('\n')
+        return `<em class='zero-width' title='${info}'></em>`
+      }
       let res = new Array(match[0].length + 1).fill('')
       let groupindex = 0
       for(let indexs of match.indices) {
