@@ -120,9 +120,12 @@
         html += testString.slice(lastLastIndex, match.index)
         if(match[0].length == 0) {
           re.lastIndex++
+          html += highLight(match, matchIndex)
+          lastLastIndex = match.index
+        } else {
+          html += highLight(match, matchIndex)
+          lastLastIndex = re.lastIndex
         }
-        html += highLight(match, matchIndex)
-        lastLastIndex = re.lastIndex
         matchIndex++
       }
       html += testString.slice(lastLastIndex)
