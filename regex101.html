@@ -16,14 +16,14 @@
     }
     #result em:nth-of-type(odd) {
       font-style: normal;
-      background-color: green;
+      xbackground-color: green;
     }
     #result em:nth-of-type(even) {
       font-style: normal;
-      background-color: greenyellow;
+      xbackground-color: greenyellow;
     }
     #output {
-      width: 200px;
+      width: 400px;
       height: 200px;
       /* position: relative; */
       > textarea, #result {
@@ -35,8 +35,35 @@
         border: 1px green solid;
         background-color: transparent;
         font-family: monospace;
-        font-size: 14px;
+        font-size: 30px;
         padding: 10px;
+      }
+      [group-index='1'] {
+        background-color: red;
+      }
+      [group-index='2'] {
+        background-color: blue;
+      }
+      [group-index='3'] {
+        background-color: green;
+      }
+      [group-index='4'] {
+        background-color: purple;
+      }
+      [group-index='5'] {
+        background-color: lawngreen;
+      }
+      [group-index='6'] {
+        background-color: orange;
+      }
+      [group-index='7'] {
+        background-color: darkorchid;
+      }
+      [group-index='8'] {
+        background-color: rgb(202, 185, 32);
+      }
+      em:not(:has(:hover)):hover {
+        outline: 2px solid palegreen;
       }
     }
   </style>
@@ -58,7 +85,7 @@
     <div>TEST STRING</div>
     <div id="output">
       <div xstyle="border: 1px solid red;" id="result"></div>
-      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()" >L aaaaa orem isum vero dolor sit, amet aaaa ctur adipisicing elit.  Vel aaaaa vero aaaaa blanditiis eaque ea quibusdam, eius in nisi minus porro at. Commodi vero aaaaa labore vero alias fugiat vero fugit non  eveniet aaaaa porro! aaaaa ero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa 78 eggs 8 cows 1 pig 88888 eggs aaaaa aaaaa</textarea>
+      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()" >L aaaaa orem isum vero dolor sit, amet aaaa ctur adipisicing elit.  Vel aaaaa vero aaaaa blanditiis eaque ea quibusdam, eius in nisi minus porro at. Commodi vero aaaaa labore vero alias fugiat vero fugit non  eveniet aaaaa porro! aaaaa ero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa 78 eggs 8 cows 1 pig 88888 eggs aaaaa aaaaa.</textarea>
     </div>
   </div>
   <script>
@@ -110,13 +137,14 @@
       for(let indexs of match.indices) {
         let start = indexs[0] - match.index
         let end = indexs[1] - match.index
-        let info = `
-        Math ${matchIndex}
-        ---
-        Group: ${groupindex}
-        Pos: ${indexs[0]}- ${indexs[1]}
-        `
-        res[start] += `<em title= '${info}'>`
+        let info = [
+          `Math ${matchIndex}`,
+          `---`,
+          `Group: ${groupindex}`,
+          `Pos: ${indexs[0]}- ${indexs[1]}`,
+        ].join('\n')
+
+        res[start] += `<em title= '${info}' group-index='${groupindex}'>`
         res[end] = `</em>` + res[end]
         groupindex++
       }
@@ -127,7 +155,6 @@
       result += res[match[0].length]
       return result
     }
-
   </script>
 </body>
 </html>
