@@ -1,0 +1,12 @@
+<script>
+  function raw(parts, ...values) {
+    let res = ''
+    for(let i = 0; i < values.length; i++) {
+      res += parts.raw[i] + values[i]
+    }
+    res += parts.raw[parts.length - 1]
+    return res
+    // String.raw`fkso${4+7}ko\\ok` === raw`fkso${4+7}ko\\ok`
+    
+  }
+</script>
