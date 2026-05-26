@@ -46,11 +46,37 @@ var admuskgit = {
   //let html = "<div>hellow</div>"
   //console.log(admuskgit.parsehtml(html))
   getElementById(id) {
-//
-    
+    function find() {
+      if(!node) {
+        return null
+      }
+      if(node.id == id) {
+        return node
+      }
+      for(let i = 0; i < node.children.length; i++) {
+        let found = find(node.children[i])
+        if(found) {
+          return found
+        }
+      }
+      return null
+    }
+    return find(document.body)
   },
   getElementsByName(node, tagName) {
-//
-
+    let res = []
+    function traverse(currentNode) {
+      if(!currentNode) {
+        return
+      }
+      if(currentNode.tagName == tagName) {
+        res.push(currentNode)
+      }
+      for(let i = 0; i < currentNode.children.length; i++) {
+        traverse(currentNode.children[i])
+      }
+    }
+    traverse(node)
+    return res
   },
 }
