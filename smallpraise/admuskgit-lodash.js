@@ -46,7 +46,7 @@ var admuskgit = {
   //let html = "<div>hellow</div>"
   //console.log(admuskgit.parsehtml(html))
   getElementById(id) {
-    function find() {
+    function find(node) {
       if(!node) {
         return null
       }
