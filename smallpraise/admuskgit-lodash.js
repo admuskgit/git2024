@@ -69,14 +69,19 @@ var admuskgit = {
       if(!currentNode) {
         return
       }
-      if(currentNode.tagName == tagName) {
+      if(currentNode.tagName?.toUpperCase() == tagName.toUpperCase()) {
         res.push(currentNode)
       }
-      for(let i = 0; i < currentNode.children.length; i++) {
-        traverse(currentNode.children[i])
+      for(let child of currentNode.children){
+        traverse(child)
       }
     }
-    traverse(node)
+    if(node && node.children) {
+      for(let child of node.children) {
+        traverse(child)
+      }
+    }
     return res
   },
+  //getElementsByName(document.body, 'a')
 }
