@@ -84,4 +84,5 @@ var admuskgit = {
     return res
   },
   //getElementsByName(document.body, 'a')
+  
 }
