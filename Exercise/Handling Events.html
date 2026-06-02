@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handling Events</title>
+</head>
+<body>
+  <p>click this document to activate the hander.</p>
+  <button>click me</button>
+  <p>no handler here.</p>
+</body>
+</html>
+<script>
+  let button = document.querySelector("button")
+  button.addEventListener("click", function() {
+    console.log("button clicked")
+  })
+  addEventListener("click", function() {
+    console.log("诶呦，你干嘛...")
+  })
+</script>
