@@ -4,19 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Handling Events</title>
+  <style>
+    div {
+      border: 1px solid green;
+      width: 300px;
+      height: 200px;
+    }
+    strong {
+      border: 1px solid green;
+    }
+  </style>
 </head>
 <body>
-  <p>click this document to activate the hander.</p>
-  <button>click me</button>
-  <p>no handler here.</p>
+  <div>
+    <p>click this document to activate the hander.</p>
+    <button data-url="https://regex101.com/">click me</button>
+    <p class="pp">no handler here.</p>
+    <strong>Strong</strong>
+  </div>
 </body>
 </html>
 <script>
   let button = document.querySelector("button")
-  button.addEventListener("click", function() {
-    console.log("button clicked")
+  let p = document.querySelector("p")
+  let pp = document.querySelector(".pp")
+  let div = document.querySelector("div")
+  button.addEventListener("click", function(e) {
+    window.open(this.dataset.url, "_blank")
+    e.stopPropagation()
+  })
+  p.addEventListener("click", function() {
+    console.log("p clicked")
+  })
+  pp.addEventListener("click", function() {
+    console.log("pp clicked")
   })
   addEventListener("click", function() {
-    console.log("诶呦，你干嘛...")
+    console.log("随便点")
+  })
+  div.addEventListener("click", function() {
+    console.log("div clicked")
   })
 </script>
