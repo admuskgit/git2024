@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mouse trail</title>
+</head>
+<style>
+  div {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: greenyellow;
+    border-radius: 50%;
+    opacity: 1;
+    transition: opacity 0.3s linear;
+    transform: translate(-50%,-50%);
+  }
+</style>
+<body>
+  <script>
+    let LastTime = 0
+    document.addEventListener("mousemove", function(e) {
+      let now = Date.now()
+      if(now - LastTime < 30) {
+        return
+      }
+      LastTime = now
+      let x = e.clientX
+      let y = e.clientY
+      console.log(x, y)
+      let dot = document.createElement("div")
+      dot.style.left = x + "px"
+      dot.style.top = y + "px"
+      document.body.appendChild(dot)
+      requestAnimationFrame(() => {
+        dot.style.opacity = 0
+      })
+      setTimeout(() => {
+        dot.remove()
+      }, 400)
+    })
+  </script>
+</body>
+</html>
