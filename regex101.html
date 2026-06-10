@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +12,29 @@
       justify-content: center;
       background-color: gray;
     }
-    input, button {
+
+    input,
+    button {
       outline: auto;
     }
+
     #result em:nth-of-type(odd) {
       font-style: normal;
       xbackground-color: green;
     }
+
     #result em:nth-of-type(even) {
       font-style: normal;
       xbackground-color: greenyellow;
     }
+
     #output {
       width: 400px;
       height: 200px;
+
       /* position: relative; */
-      > textarea, #result {
+      >textarea,
+      #result {
         /* position: absolute; */
         width: 100%;
         height: 100%;
@@ -38,39 +46,51 @@
         font-size: 30px;
         padding: 10px;
       }
+
       [group-index='1'] {
         background-color: red;
       }
+
       [group-index='2'] {
         background-color: blue;
       }
+
       [group-index='3'] {
         background-color: green;
       }
+
       [group-index='4'] {
         background-color: purple;
       }
+
       [group-index='5'] {
         background-color: lawngreen;
       }
+
       [group-index='6'] {
         background-color: orange;
       }
+
       [group-index='7'] {
         background-color: darkorchid;
       }
+
       [group-index='8'] {
         background-color: rgb(202, 185, 32);
       }
+
       [group-index='9'] {
         background-color: hotpink;
       }
+
       em:not(:has(:hover)):hover {
         outline: 2px solid palegreen;
       }
+
       em:not(:has(:hover)):hover em {
         background-color: inherit;
       }
+
       .zero-width {
         border-left: 2px dotted red;
         margin-left: -1px;
@@ -79,10 +99,11 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div>REGULAR EXPRESSION</div>
-    <input class="border" type="text" id="reInput" value = "(a(.)(..)a)">
+    <input class="border" type="text" id="reInput" value="(a(.)(..)a)">
     <button class="border" onclick="run()">RUN</button>
     <div>FLAGS</div>
     <label for=""><input type="checkbox" id="flag-g" checked>g</label>
@@ -96,7 +117,8 @@
     <div>TEST STRING</div>
     <div id="output">
       <div xstyle="border: 1px solid red;" id="result"></div>
-      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()" >L aaaaa orem isum vero dolor sit, amet aaaa ctur adipisicing elit.  Vel aaaaa vero aaaaa blanditiis eaque ea quibusdam, eius in nisi minus porro at. Commodi vero aaaaa labore vero alias fugiat vero fugit non  eveniet aaaaa porro! aaaaa ero dolor sit, amet aaaaa consectetur adipisicing elit.  Vel aaaaa vero aaaaa 78 eggs 8 cows 1 pig 88888 eggs aaaaa aaaaa.</textarea>
+      <textarea class="border" name="" id="testStringInput"
+        onscroll="syncScroll()">first aaaaa 2 aaaaa 3 aaaaa begin</textarea>
     </div>
   </div>
   <script>
@@ -106,36 +128,39 @@
       let re
       try {
         re = new RegExp(reString, flags)
-      } catch(e) {
-        if(e instanceof SyntaxError) {
+      } catch (e) {
+        if (e instanceof SyntaxError) {
           return
         }
       }
       let testString = testStringInput.value
       let html = ''
-      let match
       let lastLastIndex = 0
       let matchIndex = 0
-      while(match = re.exec(testString)) {
-        html += testString.slice(lastLastIndex, match.index)
-        if(match[0].length == 0) {
-          re.lastIndex++
-          html += highLight(match, matchIndex)
-          lastLastIndex = match.index
-        } else {
-          html += highLight(match, matchIndex)
-          lastLastIndex = re.lastIndex
+      getMatchesFromWorker(re, testString, (matches) => {
+       debugger
+        for (let str of matches) {
+          html += testString.slice(lastLastIndex, str.index)
+          if (str[0].length == 0) {
+            re.lastIndex++
+            html += highLight(match, matchIndex)
+            lastLastIndex = match.index
+          } else {
+            html += highLight(str, matchIndex)
+            lastLastIndex =  re.lastIndex
+            //lastLastIndex = str.index + str[0].length
+          }
+          matchIndex++
         }
-        matchIndex++
-      }
-      html += testString.slice(lastLastIndex)
-      result.innerHTML = html
+        html += testString.slice(lastLastIndex)
+        result.innerHTML = html
+      })
     }
     function getFlags() {
-      let flags = ['g','m','i','y','u','s','d','v']
+      let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
       return flags.filter(it => {
         let element = document.getElementById('flag-' + it)
-        if(element.checked) {
+        if (element.checked) {
           return true
         } else {
           return false
@@ -146,7 +171,7 @@
       result.scrollTop = testStringInput.scrollTop
     }
     function highLight(match, matchIndex) {
-      if(match[0].length == 0) {
+      if (match.length == 0) {
         let info = [
           `Math ${matchIndex}`,
           `---`,
@@ -157,7 +182,7 @@
       }
       let res = new Array(match[0].length + 1).fill('')
       let groupindex = 0
-      for(let indexs of match.indices) {
+      for (let indexs of match.indices) {
         let start = indexs[0] - match.index
         let end = indexs[1] - match.index
         let info = [
@@ -172,12 +197,26 @@
         groupindex++
       }
       let result = ''
-      for(let i = 0; i < match[0].length; i++) {
+      for (let i = 0; i < match[0].length; i++) {
         result += res[i] + match[0][i]
       }
       result += res[match[0].length]
       return result
     }
+    function getMatchesFromWorker(re, string, f) {
+      let worker = new Worker("./regex101-worker.js")
+      worker.addEventListener("message", (e) => {
+        let matches = e.data
+        worker.terminate()
+        f(matches)
+      })
+
+      worker.postMessage({
+        re: re,
+        string: string,
+      })
+    }
   </script>
 </body>
+
 </html>
