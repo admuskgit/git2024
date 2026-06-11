@@ -105,6 +105,7 @@
     <div>REGULAR EXPRESSION</div>
     <input class="border" type="text" id="reInput" value="(a(.)(..)a)">
     <button class="border" onclick="run()">RUN</button>
+    <span id="sta"></span>
     <div>FLAGS</div>
     <label for=""><input type="checkbox" id="flag-g" checked>g</label>
     <label for=""><input type="checkbox" id="flag-m">m</label>
@@ -137,23 +138,33 @@
       let html = ''
       let lastLastIndex = 0
       let matchIndex = 0
+      let done = false
+      setTimeout(() => {
+        if (done == false) {
+          sta.textContent = "processing..."
+        }
+      }, 500)
+      sta.textContent = "processing..."
       getMatchesFromWorker(re, testString, (matches) => {
-       debugger
-        for (let str of matches) {
-          html += testString.slice(lastLastIndex, str.index)
-          if (str[0].length == 0) {
+        sta.textContent = "ok"
+        done == true
+        for (let match of matches) {
+          html += testString.slice(lastLastIndex, match.index)
+          if (match[0].length == 0) {
             re.lastIndex++
             html += highLight(match, matchIndex)
             lastLastIndex = match.index
           } else {
-            html += highLight(str, matchIndex)
-            lastLastIndex =  re.lastIndex
-            //lastLastIndex = str.index + str[0].length
+            html += highLight(match, matchIndex)
+            //lastLastIndex =  re.lastIndex
+            lastLastIndex = match.index + match[0].length
           }
           matchIndex++
         }
         html += testString.slice(lastLastIndex)
         result.innerHTML = html
+      }, () => {
+        sta.textContent = "timeout"
       })
     }
     function getFlags() {
@@ -203,14 +214,21 @@
       result += res[match[0].length]
       return result
     }
-    function getMatchesFromWorker(re, string, f) {
+    function getMatchesFromWorker(re, string, f, g) {
       let worker = new Worker("./regex101-worker.js")
+      let success = false
       worker.addEventListener("message", (e) => {
         let matches = e.data
         worker.terminate()
+        success = true
         f(matches)
       })
-
+      setTimeout(() => {
+        if (success == false) {
+          worker.terminate()
+          g()
+        }
+      }, 2000)
       worker.postMessage({
         re: re,
         string: string,
