@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>throttle</title>
+</head>
+<button id="btn">请点击</button>
+
+<body>
+  <script>
+    function throttle(f, time) {
+      let scheduled = false, lastArgs = []
+      return function (...args) {
+        lastArgs = args
+        if (scheduled == false) {
+          scheduled = true
+          setTimeout(() => {
+            scheduled = false
+            f(...lastArgs)
+          }, time)
+        }
+      }
+    }
+    let throttlelog = throttle((e) => {
+      console.log(new Date().toLocaleTimeString())
+    }, 2000)
+    document.getElementById('btn').addEventListener('click', throttlelog)
+  </script>
+</body>
+
+</html>
