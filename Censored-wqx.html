@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Censored</title>
+</head>
+<body>
+  <textarea name="" id="message"></textarea>
+  <script>
+    let message = document.querySelector('#message')
+    message.addEventListener('keypress', (e) => {
+      if(e.key == 'W' || e.key == 'Q' || e.key == 'X') {
+        e.preventDefault()
+      }
+    })
+    message.addEventListener('paste', (e) => {
+      let text = e.clipboardData.getData('text/plain')
+      if(text.match(/[WQX]/)) {
+        e.clipboardData.setData(text.replaceAll(/[WQX]/g, '*'))
+        //e.preventDefault()
+        //alert('不要粘贴')
+      }
+    })
+  </script>
+</body>
+</html>
