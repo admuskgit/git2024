@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mouse trail</title>
 </head>
 <style>
+  body {
+    background: gray;
+  }
+
   div {
     position: absolute;
     width: 20px;
@@ -14,15 +19,16 @@
     border-radius: 50%;
     opacity: 1;
     transition: opacity 0.3s linear;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
   }
 </style>
+
 <body>
   <script>
     let LastTime = 0
-    document.addEventListener("mousemove", function(e) {
+    document.addEventListener("mousemove", function (e) {
       let now = Date.now()
-      if(now - LastTime < 30) {
+      if (now - LastTime < 30) {
         return
       }
       LastTime = now
@@ -42,4 +48,5 @@
     })
   </script>
 </body>
+
 </html>

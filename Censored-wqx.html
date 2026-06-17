@@ -9,18 +9,37 @@
   <textarea name="" id="message"></textarea>
   <script>
     let message = document.querySelector('#message')
-    message.addEventListener('keypress', (e) => {
+/*     message.addEventListener('keypress', (e) => {
       if(e.key == 'W' || e.key == 'Q' || e.key == 'X') {
         e.preventDefault()
       }
-    })
+    }) */
+   message.addEventListener('ondrop', (e) => {
+    e.preventDefault()
+   })
     message.addEventListener('paste', (e) => {
       let text = e.clipboardData.getData('text/plain')
+      let filter = text.replaceAll(/[WQX]/g, '*')
       if(text.match(/[WQX]/)) {
-        e.clipboardData.setData(text.replaceAll(/[WQX]/g, '*'))
+        e.preventDefault()
+        let mPs = message.selectionStart
+        let mPe = message.selectionEnd
+        message.value = message.value.slice(0, mPs) + filter + message.value.slice(mPe)
+        message.selectionStart = message.selectionEnd = mPs + filter.length
+        //e.clipboardData.setData(text.replaceAll(/[WQX]/g, '*'))
         //e.preventDefault()
         //alert('不要粘贴')
       }
+    })
+    let valueDescriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(message), 'value')
+    Object.defineProperty(message, 'value', {
+      get:function() {
+        return valueDescriptor.get.call(message)
+      },
+      set:function(val) {
+        let filterVal = val.replaceAll(/[WQX]/g, '*')
+        valueDescriptor.set.call(message, filterVal)
+      },
     })
   </script>
 </body>
