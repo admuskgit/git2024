@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>super</title>
+  <style>
+    body {
+      background-color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    class Animal {
+      constructor(name) {
+        this.name = name
+      }
+      speak() {
+        console.log(this.name + "发生声音")
+      }
+    }
+    class Dog extends Animal {
+      constructor(name) {
+        super(name)
+      }
+      speak() {
+        super.speak()
+        console.log(this.name + "汪汪叫")
+      }
+    }
+    const d = new Dog("旺财")
+    d.speak()
+  </script>
+</body>
+
+</html>
