@@ -118,6 +118,26 @@
     yield a 返回值的不是a
     而是调用.next()时，传入的参数。首次调用不需要传入参数
     还可以抛出错误
+    for of可以遍历生成器 数组 本质也是遍历生成器
+    与toString的区别 toString不关心传入值的类型 叫多态
+    类似生成器的数据可以结合for of使用 多态
+    Number.prototype[Symbol.iterator] = function * ()  {
+      for (let i = 0; i < this; i++) {
+        yield i
+      }
+    }
+    // VM112:1 Uncaught TypeError: 999 is not iterable
+    for (let x of 99999) {
+      console.log(x)
+    }
+    在原型上加属性 迭代器
+    class
+    静态方法 实例方法/原型方法
+    挂在函数上 挂在原型上
+    Proxy 监控和修改 Reflect反射
+    apply 调用函数
+    2024.8.30
+    表单
     */
   </script>
 </body>
