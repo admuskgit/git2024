@@ -119,7 +119,7 @@
     <div id="output">
       <div xstyle="border: 1px solid red;" id="result"></div>
       <textarea class="border" name="" id="testStringInput"
-        onscroll="syncScroll()">first aaaaa 2 aaaaa 3 aaaaa begin afdga avoma adsna anvkka vsmvkds akoewnf nkasnak nckasnv adska asoca avoma adsna anvkka</textarea>
+        onscroll="syncScroll()">first aaaaa 2 aaaaa 3 aaaaa begin afdga avoma adsna anvkka vsmvkds akoewnf nkasnak nckasnv adska asoca</textarea>
     </div>
   </div>
   <script>
@@ -143,11 +143,11 @@
         if (done == false) {
           sta.textContent = "processing..."
         }
-      }, 1000)
+      }, 500)
       sta.textContent = "processing..."
       getMatchesFromWorker(re, testString, (matches) => {
         sta.textContent = "ok"
-        done = true
+        done == true
         for (let match of matches) {
           html += testString.slice(lastLastIndex, match.index)
           if (match[0].length == 0) {
