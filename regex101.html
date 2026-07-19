@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,85 +11,63 @@
       justify-content: center;
       background-color: gray;
     }
-
     input,
     button {
       outline: auto;
     }
-
     #result em:nth-of-type(odd) {
       font-style: normal;
-      xbackground-color: green;
     }
-
     #result em:nth-of-type(even) {
       font-style: normal;
-      xbackground-color: greenyellow;
     }
-
     #output {
       width: 400px;
       height: 200px;
-
-      /* position: relative; */
-      >textarea,
       #result {
-        /* position: absolute; */
         width: 100%;
         height: 100%;
         white-space: pre-wrap;
         overflow: auto;
         border: 1px green solid;
-        background-color: transparent;
+        background-color: white;
         font-family: monospace;
         font-size: 30px;
         padding: 10px;
       }
-
       [group-index='1'] {
         background-color: red;
       }
-
       [group-index='2'] {
         background-color: blue;
       }
-
       [group-index='3'] {
         background-color: green;
       }
-
       [group-index='4'] {
         background-color: purple;
       }
-
       [group-index='5'] {
         background-color: lawngreen;
       }
-
       [group-index='6'] {
         background-color: orange;
       }
-
       [group-index='7'] {
         background-color: darkorchid;
       }
-
       [group-index='8'] {
         background-color: rgb(202, 185, 32);
       }
-
       [group-index='9'] {
         background-color: hotpink;
       }
-
       em:not(:has(:hover)):hover {
         outline: 2px solid palegreen;
       }
-
       em:not(:has(:hover)):hover em {
         background-color: inherit;
       }
-
       .zero-width {
         border-left: 2px dotted red;
         margin-left: -1px;
@@ -99,7 +76,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div>REGULAR EXPRESSION</div>
@@ -117,10 +93,7 @@
     <label for=""><input type="checkbox" id="flag-v">v</label>
     <div>TEST STRING</div>
     <div id="output">
-      <div xstyle="border: 1px solid red;" id="result"></div>
-      <textarea class="border" name="" id="testStringInput" onscroll="syncScroll()">
-        first aaaaa 2 aaaaa 3 aaaaa begin afdga avoma adsna anvkka vsmvkds akoewnf nkasnak nckasnv adska asoca avoma adsna anvkka
-      </textarea>
+      <div id="result" contenteditable>first aaaaa 2 aaaaa 3 aaaaa begin afdga avoma adsna anvkka vsmvkds akoewnf nkasnak nckasnv adska asoca avoma adsna anvkka</div>
     </div>
   </div>
   <script>
@@ -135,7 +108,8 @@
           return
         }
       }
-      let testString = testStringInput.value
+      let testString = result.textContent
+      
       let html = ''
       let lastLastIndex = 0
       let matchIndex = 0
@@ -157,16 +131,26 @@
             lastLastIndex = match.index
           } else {
             html += highLight(match, matchIndex)
-            //lastLastIndex =  re.lastIndex
             lastLastIndex = match.index + match[0].length
           }
           matchIndex++
         }
+
+       
         html += testString.slice(lastLastIndex)
+
+
+        let selectionPosition = getcursorpos()
         result.innerHTML = html
+        function restore(selectionPosition) {
+
+        }
       }, () => {
         sta.textContent = "timeout"
       })
+    }
+    function getcursorpos() {
+      let pos = 0
     }
     function getFlags() {
       let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
@@ -180,7 +164,7 @@
       }).join('')
     }
     function syncScroll() {
-      result.scrollTop = testStringInput.scrollTop
+      result.scrollTop = result.scrollTop
     }
     function highLight(match, matchIndex) {
       if (match.length == 0) {
@@ -237,5 +221,4 @@
     }
   </script>
 </body>
-
 </html>
