@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,19 +12,24 @@
       justify-content: center;
       background-color: gray;
     }
+
     input,
     button {
       outline: auto;
     }
+
     #result em:nth-of-type(odd) {
       font-style: normal;
     }
+
     #result em:nth-of-type(even) {
       font-style: normal;
     }
+
     #output {
       width: 400px;
       height: 200px;
+
       #result {
         width: 100%;
         height: 100%;
@@ -35,39 +41,51 @@
         font-size: 30px;
         padding: 10px;
       }
+
       [group-index='1'] {
         background-color: red;
       }
+
       [group-index='2'] {
         background-color: blue;
       }
+
       [group-index='3'] {
         background-color: green;
       }
+
       [group-index='4'] {
         background-color: purple;
       }
+
       [group-index='5'] {
         background-color: lawngreen;
       }
+
       [group-index='6'] {
         background-color: orange;
       }
+
       [group-index='7'] {
         background-color: darkorchid;
       }
+
       [group-index='8'] {
         background-color: rgb(202, 185, 32);
       }
+
       [group-index='9'] {
         background-color: hotpink;
       }
+
       em:not(:has(:hover)):hover {
         outline: 2px solid palegreen;
       }
+
       em:not(:has(:hover)):hover em {
         background-color: inherit;
       }
+
       .zero-width {
         border-left: 2px dotted red;
         margin-left: -1px;
@@ -76,6 +94,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div>REGULAR EXPRESSION</div>
@@ -93,7 +112,7 @@
     <label for=""><input type="checkbox" id="flag-v">v</label>
     <div>TEST STRING</div>
     <div id="output">
-      <div id="result" contenteditable>first aaaaa 2 aaaaa 3 aaaaa begin afdga avoma adsna anvkka vsmvkds akoewnf nkasnak nckasnv adska asoca avoma adsna anvkka</div>
+      <div id="result" contenteditable>aaaaa 1 okech 2 apwaa 3 begin 4 afdgo 5 avoma 6 adsnn 7 anvka 8 avsma 9</div>
     </div>
   </div>
   <script>
@@ -109,7 +128,6 @@
         }
       }
       let testString = result.textContent
-      
       let html = ''
       let lastLastIndex = 0
       let matchIndex = 0
@@ -135,22 +153,43 @@
           }
           matchIndex++
         }
-
-       
         html += testString.slice(lastLastIndex)
-
-
         let selectionPosition = getcursorpos()
         result.innerHTML = html
-        function restore(selectionPosition) {
-
-        }
+        restore(selectionPosition)
       }, () => {
         sta.textContent = "timeout"
       })
     }
+    //同一个anchorOffset = 5 在文本节点里：第 5 个字符 ; 在元素节点里：第 5 个子节点位置.所以需要做 DOM 遍历
     function getcursorpos() {
-      let pos = 0
+      let position = 0
+      let cursorPos = window.getSelection()
+      traverse(result, textNode => {
+        if (textNode === cursorPos.anchorNode) {
+          position += cursorPos.anchorOffset
+          return false
+        } else {
+          position += textNode.textContent.length
+        }
+      })
+      return position
+    }
+    function traverse(node, f) {
+      for (let child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          if (f(child) === false) {
+            return false
+          }
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          if (traverse(child, f) === false) {
+            return false
+          }
+        }
+      }
+    }
+    function restore(selectionPosition) {
+
     }
     function getFlags() {
       let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
@@ -221,4 +260,5 @@
     }
   </script>
 </body>
+
 </html>
