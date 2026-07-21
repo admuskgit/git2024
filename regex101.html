@@ -156,7 +156,7 @@
         html += testString.slice(lastLastIndex)
         let selectionPosition = getcursorpos()
         result.innerHTML = html
-        restore(selectionPosition)
+        restore(result, selectionPosition)
       }, () => {
         sta.textContent = "timeout"
       })
@@ -188,76 +188,81 @@
         }
       }
     }
-    function restore(selectionPosition) {
-
-    }
-    function getFlags() {
-      let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
-      return flags.filter(it => {
-        let element = document.getElementById('flag-' + it)
-        if (element.checked) {
-          return true
+    function restore(node, index) {
+      let sele = window.getSelection()
+      traverse(node, textNode => {
+        if (index > textNode.textContent.length) {
+          index -= textNode.textContent.length
         } else {
+          sele.setPosition(textNode, index)
           return false
         }
-      }).join('')
-    }
-    function syncScroll() {
-      result.scrollTop = result.scrollTop
-    }
-    function highLight(match, matchIndex) {
-      if (match.length == 0) {
-        let info = [
-          `Math ${matchIndex}`,
-          `---`,
-          `Group 0: [empty string]`,
-          `Pos: ${match.index}- ${match.index}`,
-        ].join('\n')
-        return `<em class='zero-width' title='${info}'></em>`
-      }
-      let res = new Array(match[0].length + 1).fill('')
-      let groupindex = 0
-      for (let indexs of match.indices) {
-        let start = indexs[0] - match.index
-        let end = indexs[1] - match.index
-        let info = [
-          `Math ${matchIndex}`,
-          `---`,
-          `Group: ${groupindex}`,
-          `Pos: ${indexs[0]}- ${indexs[1]}`,
-        ].join('\n')
-
-        res[start] += `<em title= '${info}' group-index='${groupindex}'>`
-        res[end] = `</em>` + res[end]
-        groupindex++
-      }
-      let result = ''
-      for (let i = 0; i < match[0].length; i++) {
-        result += res[i] + match[0][i]
-      }
-      result += res[match[0].length]
-      return result
-    }
-    function getMatchesFromWorker(re, string, f, g) {
-      let worker = new Worker("./regex101-worker.js")
-      let success = false
-      worker.addEventListener("message", (e) => {
-        let matches = e.data
-        worker.terminate()
-        success = true
-        f(matches)
       })
-      setTimeout(() => {
-        if (success == false) {
-          worker.terminate()
-          g()
+    }
+      function getFlags() {
+        let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
+        return flags.filter(it => {
+          let element = document.getElementById('flag-' + it)
+          if (element.checked) {
+            return true
+          } else {
+            return false
+          }
+        }).join('')
+      }
+      function highLight(match, matchIndex) {
+        if (match.length == 0) {
+          let info = [
+            `Math ${matchIndex}`,
+            `---`,
+            `Group 0: [empty string]`,
+            `Pos: ${match.index}- ${match.index}`,
+          ].join('\n')
+          return `<em class='zero-width' title='${info}'></em>`
         }
-      }, 2000)
-      worker.postMessage({
-        re: re,
-        string: string,
-      })
-    }
+        let res = new Array(match[0].length + 1).fill('')
+        let groupindex = 0
+        for (let indexs of match.indices) {
+          let start = indexs[0] - match.index
+          let end = indexs[1] - match.index
+          let info = [
+            `Math ${matchIndex}`,
+            `---`,
+            `Group: ${groupindex}`,
+            `Pos: ${indexs[0]}- ${indexs[1]}`,
+          ].join('\n')
+
+          res[start] += `<em title= '${info}' group-index='${groupindex}'>`
+          res[end] = `</em>` + res[end]
+          groupindex++
+        }
+        let result = ''
+        for (let i = 0; i < match[0].length; i++) {
+          result += res[i] + match[0][i]
+        }
+        result += res[match[0].length]
+        return result
+      }
+      function getMatchesFromWorker(re, string, f, g) {
+        let worker = new Worker("./regex101-worker.js")
+        let success = false
+        worker.addEventListener("message", (e) => {
+          let matches = e.data
+          worker.terminate()
+          success = true
+          f(matches)
+        })
+        setTimeout(() => {
+          if (success == false) {
+            worker.terminate()
+            g()
+          }
+        }, 2000)
+        worker.postMessage({
+          re: re,
+          string: string,
+        })
+      }
   </script>
 </body>
 
