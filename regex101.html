@@ -92,13 +92,38 @@
         margin-right: -1px;
       }
     }
+
+    .geoup-Hover-Tips {
+      position: fixed;
+      background-color: black;
+      color: aqua;
+      display: none;
+      white-space: pre;
+      border-radius: 10px;
+      padding: 4px;
+      transform: translateX(-50%) translateY(-100%) translateY(-5px);
+      margin: 0;
+    }
+
+    .geoup-Hover-Tips::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 0;
+      width: 0;
+      border-top: 10px solid black;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <div>REGULAR EXPRESSION</div>
-    <input class="border" type="text" id="reInput" value="(a(.)(..)a)">
+    <input class="border" type="text" id="reInput" value="(a(a)(..)a)">
     <button class="border" onclick="run()">RUN</button>
     <span id="sta"></span>
     <div>FLAGS</div>
@@ -112,7 +137,8 @@
     <label for=""><input type="checkbox" id="flag-v">v</label>
     <div>TEST STRING</div>
     <div id="output">
-      <div id="result" contenteditable>aaaaa 1 okech 2 apwaa 3 begin 4 afdgo 5 avoma 6 adsnn 7 anvka 8 avsma 9</div>
+      <div id="result" contenteditable>aaaaa 1 okech 2 apwaa aaaaa begin 4 afdgo 5 avoma 6 adsnn 7 anvka 8 avsma 9</div>
+      <div class="geoup-Hover-Tips"></div>
     </div>
   </div>
   <script>
@@ -199,70 +225,101 @@
         }
       })
     }
-      function getFlags() {
-        let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
-        return flags.filter(it => {
-          let element = document.getElementById('flag-' + it)
-          if (element.checked) {
-            return true
-          } else {
-            return false
-          }
-        }).join('')
+    let results = document.querySelector("#result")
+    let geoupHoverTips = document.querySelector(".geoup-Hover-Tips")
+    results.addEventListener("mousemove", (event) => {
+      if (event.target.matches("em")) {
+        let X = event.clientX
+        let Y = event.clientY
+        //getBoundingClientRect()：返回整个元素的外接矩形（一个矩形）
+        //getClientRects()：返回元素所有占用的矩形区域（可能多个矩形）换行文本
+        let box = event.target.getClientRects()
+        let boxs = currentbox(box, Y)
+        let em = event.target.dataset.title
+        geoupHoverTips.textContent = em
+        geoupHoverTips.style.display = 'block'
+        geoupHoverTips.style.left = X + 'px'
+        geoupHoverTips.style.top = boxs.top + 'px'
       }
-      function highLight(match, matchIndex) {
-        if (match.length == 0) {
-          let info = [
-            `Math ${matchIndex}`,
-            `---`,
-            `Group 0: [empty string]`,
-            `Pos: ${match.index}- ${match.index}`,
-          ].join('\n')
-          return `<em class='zero-width' title='${info}'></em>`
-        }
-        let res = new Array(match[0].length + 1).fill('')
-        let groupindex = 0
-        for (let indexs of match.indices) {
-          let start = indexs[0] - match.index
-          let end = indexs[1] - match.index
-          let info = [
-            `Math ${matchIndex}`,
-            `---`,
-            `Group: ${groupindex}`,
-            `Pos: ${indexs[0]}- ${indexs[1]}`,
-          ].join('\n')
-
-          res[start] += `<em title= '${info}' group-index='${groupindex}'>`
-          res[end] = `</em>` + res[end]
-          groupindex++
-        }
-        let result = ''
-        for (let i = 0; i < match[0].length; i++) {
-          result += res[i] + match[0][i]
-        }
-        result += res[match[0].length]
-        return result
+    })
+    results.addEventListener('mouseout', (event) => {
+      if (event.target.matches("em")) {
+        geoupHoverTips.style.display = 'none'
       }
-      function getMatchesFromWorker(re, string, f, g) {
-        let worker = new Worker("./regex101-worker.js")
-        let success = false
-        worker.addEventListener("message", (e) => {
-          let matches = e.data
+    })
+    function currentbox(box, y) {
+      if (box.length === 1) {
+        return box[0]
+      }
+      for (let b of box) {
+        if (y >= b.top && y <= b.bottom) {
+          return b
+        }
+      }
+    }
+    function getFlags() {
+      let flags = ['g', 'm', 'i', 'y', 'u', 's', 'd', 'v']
+      return flags.filter(it => {
+        let element = document.getElementById('flag-' + it)
+        if (element.checked) {
+          return true
+        } else {
+          return false
+        }
+      }).join('')
+    }
+    function highLight(match, matchIndex) {
+      if (match.length == 0) {
+        let info = [
+          `Math ${matchIndex}`,
+          `---`,
+          `Group 0: [empty string]`,
+          `Pos: ${match.index}- ${match.index}`,
+        ].join('\n')
+        return `<em class='zero-width' data-title='${info}'></em>`
+      }
+      let res = new Array(match[0].length + 1).fill('')
+      let groupindex = 0
+      for (let indexs of match.indices) {
+        let start = indexs[0] - match.index
+        let end = indexs[1] - match.index
+        let info = [
+          `Math ${matchIndex}`,
+          `---`,
+          `Group: ${groupindex}`,
+          `Pos: ${indexs[0]}- ${indexs[1]}`,
+        ].join('\n')
+        res[start] += `<em data-title= '${info}' group-index='${groupindex}'>`
+        res[end] = `</em>` + res[end]
+        groupindex++
+      }
+      let result = ''
+      for (let i = 0; i < match[0].length; i++) {
+        result += res[i] + match[0][i]
+      }
+      result += res[match[0].length]
+      return result
+    }
+    function getMatchesFromWorker(re, string, f, g) {
+      let worker = new Worker("./regex101-worker.js")
+      let success = false
+      worker.addEventListener("message", (e) => {
+        let matches = e.data
+        worker.terminate()
+        success = true
+        f(matches)
+      })
+      setTimeout(() => {
+        if (success == false) {
           worker.terminate()
-          success = true
-          f(matches)
-        })
-        setTimeout(() => {
-          if (success == false) {
-            worker.terminate()
-            g()
-          }
-        }, 2000)
-        worker.postMessage({
-          re: re,
-          string: string,
-        })
-      }
+          g()
+        }
+      }, 2000)
+      worker.postMessage({
+        re: re,
+        string: string,
+      })
+    }
   </script>
 </body>
 
