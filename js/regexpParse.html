@@ -98,17 +98,17 @@
           positive: null,
           lookhead: null,
           groupName: '',
-          branches : [],
+          branches: [],
         }
         i++
         if (input[i] !== '?') {
-          node.start = i
           while (input[i] !== ')') {
             i++
           }
           node.capture = true
           node.end = i
-          return input.slice(node.start, i)
+          node.raw = input.slice(node.start, node.end)
+          return node
         } else {
           i++
           if (input[i] === '=') {
@@ -140,6 +140,8 @@
             }
             node.branches = branchess()
             i++
+            node.end = i
+            node.raw = input.slice(node.start, node.end)
             return node
           }
           function groupNames() {
@@ -148,8 +150,7 @@
             while (input[i] !== '>') {
               i++
             }
-            node.end = i
-            return input.slice(node.start, i)
+            return input.slice(start, i)
           }
         }
       }
