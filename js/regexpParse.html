@@ -1,13 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>regexpParse</title>
+  <style>
+    body {
+      background-color: gray;
+    }
+  </style>
 </head>
+
 <body>
   <script>
-    
+    let re = /(f|k+|k{2,9})|j(k)+|(?:s)|(?=p)\n[class]/
+    function parseRegex(input) {
+      let i = 0
+      function onePart() {
+        if (input[i] === '(') {
+          return Group()
+        }
+        if (input[i] === '[') {
+          return characterClass()
+        }
+        if (input[i] === '?' || input[i] === '*' || input[i] === '+' || input[i] === '{') {
+          return Quantifier()
+        }
+      }
+      function charSinglechar() {
+        let node = {
+          type: 'Charater',
+          start: i,
+          end: 0,
+          raw: '',
+          character: input[i],
+        }
+        i++
+        node.end = i
+        node.raw = input.slice(node.start, node.end)
+        return node
+      }
+      function Quantifier() {
+
+      }
+      function escapeCharacter() {
+        i++
+      }
+      function characterClass() {
+        let node = {
+          type: 'characterClass',
+          start: i,
+          end: 0,
+          raw: '',
+          invert: false,
+          characterclass: []
+        }
+        i++
+        if (input[i] === '^') {
+          node.invert = true
+        }
+        i++
+        node.end = i
+        node.raw = input.slice(node.start, node.end)
+        return node
+        while (i < input.length && input[i] !== ']') {
+          let parts = parseclass()
+          node.characterclass.push(parts)
+        }
+        i++
+        node.end = i
+        node.raw = input.slice(node.start, node.end)
+        return node
+        function parseclass() {
+          if (input[i] !== '\\') {
+            return escapeCharacter()
+          } else {
+            return charSinglechar()
+          }
+        }
+      }
+      function branchess() {
+
+      }
+      function branch() {
+
+      }
+      function Group() {
+        let node = {
+          type: 'group',
+          start: i,
+          end: 0,
+          raw: '',
+          groupIndex: 0,
+          capture: false,
+          assert: false,
+          positive: null,
+          lookhead: null,
+          groupName: '',
+          branches : [],
+        }
+        i++
+        if (input[i] !== '?') {
+          node.start = i
+          while (input[i] !== ')') {
+            i++
+          }
+          node.capture = true
+          node.end = i
+          return input.slice(node.start, i)
+        } else {
+          i++
+          if (input[i] === '=') {
+            i++
+            node.assert = true
+            node.positive = true
+            node.lookhead = true
+          } else if (input[i] === '!') {
+            i++
+            node.assert = true
+            node.positive = false
+            node.lookhead = true
+          } else {
+            i++
+            if (input[i] === '=') {
+              i++
+              node.assert = true
+              node.positive = true
+              node.lookhead = false
+            } else if (input[i] === '!') {
+              i++
+              node.assert = true
+              node.positive = false
+              node.lookhead = false
+            } else {
+              node.capture = true
+              node.groupName = groupNames()
+              i++
+            }
+            node.branches = branchess()
+            i++
+            return node
+          }
+          function groupNames() {
+            i++
+            let start = i
+            while (input[i] !== '>') {
+              i++
+            }
+            node.end = i
+            return input.slice(node.start, i)
+          }
+        }
+      }
+    }
   </script>
 </body>
+
 </html>
