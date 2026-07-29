@@ -17,6 +17,7 @@
     let re = /(f|k+|k{2,9})|j(k)+|(?:s)|(?=p)\n[class]/
     function parseRegex(input) {
       let i = 0
+      return branch()
       function onePart() {
         if (input[i] === '(') {
           return Group()
@@ -83,8 +84,22 @@
       function branchess() {
 
       }
+      //raw和character不同
       function branch() {
-
+        let node = {
+          type: 'branch',
+          start: i,
+          end: 0,
+          raw: '',
+          element: [],
+        }
+        while (input[i] !== '|' && i < input.length && input[i] !== ')') {
+          let ele = charSinglechar()
+          node.element.push(ele)
+        }
+        node.end = i
+        node.raw = input.slice(node.start, i)
+        return node
       }
       function Group() {
         let node = {
