@@ -164,14 +164,6 @@
           branches: [],
         }
         i++
-        if (input[i] !== '?') {
-          node.branches.push(branch())
-          node.capture = true
-          i++
-          node.end = i
-          node.raw = input.slice(node.start, node.end)
-          return node
-        }
         if (input[i] === '?') {
           i++
           if (input[i] === ':') {
@@ -214,8 +206,14 @@
               i++
             }
           }
+        } else {
+          node.capture = true
         }
         node.branches.push(branch())
+        while (i < input.length && input[i] === '|') {
+          i++
+          node.branches.push(branch())
+        }
         if (input[i] === ')') {
           i++
         }
