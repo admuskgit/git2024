@@ -18,16 +18,18 @@
       let i = 0
       return branchess()
       function onePart() {
+        let atom
         if (input[i] === '(') {
           return Group()
-        }
-        if (input[i] === '[') {
+        } else if (input[i] === '[') {
           return characterClass()
+        } else {
+          atom = charSinglechar()
         }
-        if (input[i] === '?' || input[i] === '*' || input[i] === '+' || input[i] === '{') {
-          return Quantifier()
+        if (i < input.length && input[i] === '?' || input[i] === '*' || input[i] === '+' || input[i] === '{') {
+          return Quantifier(atom)
         }
-        return charSinglechar()
+        return atom
       }
       function charSinglechar() {
         let node = {
@@ -42,16 +44,16 @@
         node.raw = input.slice(node.start, node.end)
         return node
       }
-      function Quantifier() {
+      function Quantifier(repeatElement) {
         let node = {
           type: 'Quantifier',
-          start: i,
+          start: repeatElement.start,
           end: 0,
           raw: '',
           min: 0,
           max: Infinity,
           greedy: true,
-          repeatElement: null,
+          repeatElement: repeatElement,
         }
         if (input[i] === '?') {
           i++
@@ -74,16 +76,20 @@
           } else if (input[i] === ',') {
             i++
             start = i
-            while (input[i] !== '}') {
+            while (i < input.length && input[i] !== '}') {
+              i++
+            }
+            if (start === i) {
+              node.max = Infinity
+            } else {
+              node.max = Number(input.slice(start, i))
+            }
+            if (input[i] === '}') {
               i++
             }
           }
-          if (start === i) {
-            node.max = Infinity
-          } else {
-            node.max = Number(input.slice(start, i))
-          }
         }
+        //非贪婪匹配
         if (input[i] === '?') {
           node.greedy = false
           i++
@@ -91,9 +97,6 @@
         node.end = i
         node.raw = input.slice(node.start, node.end)
         return node
-      }
-      function escapeCharacter() {
-        i++
       }
       function characterClass() {
         let node = {
@@ -107,26 +110,17 @@
         i++
         if (input[i] === '^') {
           node.invert = true
+          i++
         }
-        i++
-        node.end = i
-        node.raw = input.slice(node.start, node.end)
-        return node
         while (i < input.length && input[i] !== ']') {
-          let parts = parseclass()
-          node.characterclass.push(parts)
+          node.characterclass.push(charSinglechar())
         }
-        i++
+        if (input[i] === ']') {
+          i++
+        }
         node.end = i
         node.raw = input.slice(node.start, node.end)
         return node
-        function parseclass() {
-          if (input[i] !== '\\') {
-            return escapeCharacter()
-          } else {
-            return charSinglechar()
-          }
-        }
       }
       function branchess() {
         let bran = []
