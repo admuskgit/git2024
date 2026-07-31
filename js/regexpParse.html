@@ -43,7 +43,54 @@
         return node
       }
       function Quantifier() {
-        let
+        let node = {
+          type: 'Quantifier',
+          start: i,
+          end: 0,
+          raw: '',
+          min: 0,
+          max: Infinity,
+          greedy: true,
+          repeatElement: null,
+        }
+        if (input[i] === '?') {
+          i++
+          node.max = 1
+        } else if (input[i] === '*') {
+          i++
+        } else if (input[i] === '+') {
+          i++
+          node.min = 1
+        } else if (input[i] === '{') {
+          i++
+          let start = i
+          while (input[i] !== ',' && input[i] !== '}') {
+            i++
+          }
+          node.min = Number(input.slice(start, i))
+          if (input[i] === '}') {
+            node.max = node.min
+            i++
+          } else if (input[i] === ',') {
+            i++
+            start = i
+            while (input[i] !== '}') {
+              i++
+            }
+          }
+          if (start === i) {
+            node.max = Infinity
+          } else {
+            node.max = Number(input.slice(start, i))
+          }
+        }
+        if (input[i] === '?') {
+          node.greedy = false
+          i++
+        }
+        node.end = i
+        node.raw = input.slice(node.start, node.end)
+        return node
       }
       function escapeCharacter() {
         i++
