@@ -20,13 +20,13 @@
       function onePart() {
         let atom
         if (input[i] === '(') {
-          return Group()
+          atom = Group()
         } else if (input[i] === '[') {
-          return characterClass()
+          atom = characterClass()
         } else {
           atom = charSinglechar()
         }
-        if (i < input.length && input[i] === '?' || input[i] === '*' || input[i] === '+' || input[i] === '{') {
+        if (i < input.length && (input[i] === '?' || input[i] === '*' || input[i] === '+' || input[i] === '{')) {
           return Quantifier(atom)
         }
         return atom
@@ -43,6 +43,12 @@
         node.end = i
         node.raw = input.slice(node.start, node.end)
         return node
+      }
+      //转义字符
+      function escape() {
+        let node = {
+
+        }
       }
       function Quantifier(repeatElement) {
         let node = {
