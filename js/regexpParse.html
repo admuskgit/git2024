@@ -19,7 +19,9 @@
       return branchess()
       function onePart() {
         let atom
-        if (input[i] === '(') {
+        if (input[i] === '\\') {
+          atom = escape()
+        } else if (input[i] === '(') {
           atom = Group()
         } else if (input[i] === '[') {
           atom = characterClass()
@@ -47,8 +49,18 @@
       //转义字符
       function escape() {
         let node = {
-
+          type: 'Escape',
+          start: i,
+          end: 0,
+          raw: '',
+          escape: '',
         }
+        i++
+        node.escape = input[i]
+        i++
+        node.end = i
+        node.raw = input.slice(node.start, node.end)
+        return node
       }
       function Quantifier(repeatElement) {
         let node = {
