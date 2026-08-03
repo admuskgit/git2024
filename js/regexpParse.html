@@ -16,6 +16,7 @@
   <script>
     function parseRegex(input) {
       let i = 0
+      let groupIndex = 0
       return branchess()
       function onePart() {
         let atom
@@ -116,6 +117,12 @@
         node.raw = input.slice(node.start, node.end)
         return node
       }
+      function classPart() {
+        if (input[i] === '\\') {
+          return escape()
+        }
+        return charSinglechar()
+      }
       function characterClass() {
         let node = {
           type: 'characterClass',
@@ -131,7 +138,7 @@
           i++
         }
         while (i < input.length && input[i] !== ']') {
-          node.characterclass.push(charSinglechar())
+          node.characterclass.push(classPart())
         }
         if (input[i] === ']') {
           i++
@@ -226,6 +233,8 @@
           }
         } else {
           node.capture = true
+          groupIndex++
+          node.groupIndex = groupIndex
         }
         node.branches.push(branch())
         while (i < input.length && input[i] === '|') {
