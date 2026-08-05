@@ -250,11 +250,31 @@
         return node
       }
     }
-    function draw() {
-
+    function draw(node) {
+      if (node.type === 'Character') {
+        return drawcharSinglechar()
+      }
+      if (node.type === 'Escape') {
+        return drawescape()
+      }
+      if (node.type === 'Quantifier') {
+        return drawQuantifier()
+      }
+      if (node.type === 'characterClass') {
+        return drawcharacterClass()
+      }
+      if (node.type === 'Char') {
+        return drawbranchess()
+      }
+      if (node.type === 'branch') {
+        return drawbranch()
+      }
+      if (node.type === 'Group') {
+        return drawGroup()
+      }
     }
     function drawcharSinglechar() {
-
+      let 
     }
     function drawescape() {
 
