@@ -250,49 +250,96 @@
         return node
       }
     }
+    const svg = document.querySelector('svg')
+    function createSVG(tagName, attrs = {}, children = []) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tagName)
+      for (const [key, value] of Object.entries(attrs)) {
+        el.setAttribute(key, value)
+      }
+      children.forEach(it => el.appendChild(it))
+      return el
+    }
     function draw(node) {
       if (node.type === 'Character') {
-        return drawcharSinglechar()
+        return drawcharSinglechar(node)
       }
       if (node.type === 'Escape') {
-        return drawescape()
+        return drawescape(node)
       }
       if (node.type === 'Quantifier') {
-        return drawQuantifier()
+        return drawQuantifier(node)
       }
       if (node.type === 'characterClass') {
-        return drawcharacterClass()
-      }
-      if (node.type === 'Char') {
-        return drawbranchess()
+        return drawcharacterClass(node)
       }
       if (node.type === 'branch') {
-        return drawbranch()
+        return drawbranch(node)
       }
       if (node.type === 'Group') {
-        return drawGroup()
+        return drawGroup(node)
       }
     }
-    function drawcharSinglechar() {
-      let 
+    function drawcharSinglechar(node) {
+      const strokeWidth = 10
+      const text = createSVG('text', {
+        'font-size': '100px',
+        'font-family': 'Consolas, Menlo, monospace',
+        'fill': 'red',
+        'dominant-baseline': 'central',//垂直居中 配合height/2
+        'text-anchor': 'middle',//水平居中 配合width/2
+      })
+      text.textContent = node.character
+      const rect = createSVG('rect', {
+        rx: 5,
+        ry: 5,
+        fill: 'yellow',
+        stroke: 'green',
+        'stroke-width': strokeWidth
+      })
+      const g = createSVG('g', { class: 'character-node' }, [rect, text])
+      svg.appendChild(g)
+      const bbox = text.getBBox()
+      const width = Math.max(bbox.width + 40, 60)
+      const height = bbox.height + 10
+      rect.setAttribute('width', width)
+      rect.setAttribute('height', height)
+      text.setAttribute('x', width / 2)
+      text.setAttribute('y', height / 2)
+      return {
+        el: g,
+        width: width + strokeWidth,
+        height: height + strokeWidth,
+        y: (height + strokeWidth) / 2
+      }
     }
-    function drawescape() {
+    function drawescape(node) {
 
     }
-    function drawQuantifier() {
+    function drawQuantifier(node) {
 
     }
-    function drawcharacterClass() {
+    function drawcharacterClass(node) {
 
     }
-    function drawbranchess() {
+    function drawbranchess(node) {
 
     }
-    function drawbranch() {
+    function drawbranch(node) {
 
     }
-    function drawGroup() {
+    function drawGroup(node) {
 
+    }
+    function render(ast) {
+      svg.innerHTML = ''
+      const rootNode = Array.isArray(ast) ? ast[0] : ast
+      const result = draw(rootNode)
+      const MARGIN = 20
+      result.el.setAttribute('transform', `translate(${MARGIN - 15}, ${MARGIN - 15})`)
+      const svgWidth = result.width + MARGIN * 2
+      const svgHeight = result.height + MARGIN * 2
+      svg.setAttribute('width', svgWidth)
+      svg.setAttribute('height', svgHeight)
     }
   </script>
 </body>
