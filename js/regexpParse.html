@@ -177,7 +177,7 @@
       }
       function Group() {
         let node = {
-          type: 'group',
+          type: 'Group',
           start: i,
           end: 0,
           raw: '',
@@ -250,15 +250,6 @@
         return node
       }
     }
-    const svg = document.querySelector('svg')
-    function createSVG(tagName, attrs = {}, children = []) {
-      const el = document.createElementNS('http://www.w3.org/2000/svg', tagName)
-      for (const [key, value] of Object.entries(attrs)) {
-        el.setAttribute(key, value)
-      }
-      children.forEach(it => el.appendChild(it))
-      return el
-    }
     function draw(node) {
       if (node.type === 'Character') {
         return drawcharSinglechar(node)
@@ -279,38 +270,30 @@
         return drawGroup(node)
       }
     }
+    let svg = document.querySelector('svg')
+    svg.setAttribute('width', '500')
+    svg.setAttribute('height', '500')
     function drawcharSinglechar(node) {
-      const strokeWidth = 10
-      const text = createSVG('text', {
-        'font-size': '100px',
-        'font-family': 'Consolas, Menlo, monospace',
-        'fill': 'red',
-        'dominant-baseline': 'central',//垂直居中 配合height/2
-        'text-anchor': 'middle',//水平居中 配合width/2
-      })
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      g.setAttribute('transform', 'translate(10, 10)')
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('width', '20')
+      rect.setAttribute('height', '20')
+      rect.setAttribute('rx', '5')
+      rect.setAttribute('ry', '5')
+      rect.setAttribute('fill', 'red')
+      rect.setAttribute('stroke', 'green')
+      rect.setAttribute('stroke-width', '4')
+      let text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+      text.setAttribute('x', '10')
+      text.setAttribute('y', '10')
+      text.setAttribute('text-anchor', 'middle')
+      text.setAttribute('dominant-baseline', 'central')
+      text.setAttribute('font-size', '10')
       text.textContent = node.character
-      const rect = createSVG('rect', {
-        rx: 5,
-        ry: 5,
-        fill: 'yellow',
-        stroke: 'green',
-        'stroke-width': strokeWidth
-      })
-      const g = createSVG('g', { class: 'character-node' }, [rect, text])
-      svg.appendChild(g)
-      const bbox = text.getBBox()
-      const width = Math.max(bbox.width + 40, 60)
-      const height = bbox.height + 10
-      rect.setAttribute('width', width)
-      rect.setAttribute('height', height)
-      text.setAttribute('x', width / 2)
-      text.setAttribute('y', height / 2)
-      return {
-        el: g,
-        width: width + strokeWidth,
-        height: height + strokeWidth,
-        y: (height + strokeWidth) / 2
-      }
+      g.appendChild(rect)
+      g.appendChild(text)
+      return g
     }
     function drawescape(node) {
 
@@ -325,21 +308,34 @@
 
     }
     function drawbranch(node) {
-
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let x = 26
+      let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      line.setAttribute('x1', '0')
+      line.setAttribute('y1', '12')
+      line.setAttribute('x2', '24')
+      line.setAttribute('y2', '12')
+      line.setAttribute('stroke', 'red')
+      line.setAttribute('stroke-width', '4')
+      g.appendChild(line)
+      for (let i = 0; i < node.element.length; i++) {
+        let child = draw(node.element[i])
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        line.setAttribute('x1', x + 22)
+        line.setAttribute('y1', '12')
+        line.setAttribute('x2', x + 46)
+        line.setAttribute('y2', '12')
+        line.setAttribute('stroke', 'red')
+        line.setAttribute('stroke-width', '4')
+        g.appendChild(child)
+        g.appendChild(line)
+        child.setAttribute('transform', `translate(${x}, 2)`)
+        x += 20 + 20 + 4 + 4 //框框是20，宽度是4，宽度以线条中心分别向内向外拓展2，看起来总宽是24
+      }
+      return g
     }
     function drawGroup(node) {
 
-    }
-    function render(ast) {
-      svg.innerHTML = ''
-      const rootNode = Array.isArray(ast) ? ast[0] : ast
-      const result = draw(rootNode)
-      const MARGIN = 20
-      result.el.setAttribute('transform', `translate(${MARGIN - 15}, ${MARGIN - 15})`)
-      const svgWidth = result.width + MARGIN * 2
-      const svgHeight = result.height + MARGIN * 2
-      svg.setAttribute('width', svgWidth)
-      svg.setAttribute('height', svgHeight)
     }
   </script>
 </body>
