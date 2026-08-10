@@ -293,7 +293,13 @@
       text.textContent = node.character
       g.appendChild(rect)
       g.appendChild(text)
-      return g
+      let width = 24
+      let height = 24
+      return {
+        g: g,
+        width: width,
+        height: height,
+      }
     }
     function drawescape(node) {
 
@@ -319,7 +325,8 @@
       line.setAttribute('stroke-width', '4')
       g.appendChild(line)
       for (let i = 0; i < node.element.length; i++) {
-        let child = draw(node.element[i])
+        let childc = draw(node.element[i])
+        let child = childc.g
         let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
         line.setAttribute('x1', x + 22)
         line.setAttribute('y1', '12')
@@ -332,12 +339,41 @@
         child.setAttribute('transform', `translate(${x}, 2)`)
         x += 20 + 20 + 4 + 4 //框框是20，宽度是4，宽度以线条中心分别向内向外拓展2，看起来总宽是24
       }
-      return g
+      return {
+        g: g,
+        width: x,
+        height: 24,
+      }
     }
     function drawGroup(node) {
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let branch = draw(node.branches[0])
+      let branchG = branch.g
+      let innerWidth = branch.width
+      let innerHeight = branch.height
+      let paddingX = 1
+      let paddingY = 1
+      let groupWidth = innerWidth + paddingX * 2
+      let groupHeight = innerHeight + paddingY * 2
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('width', groupWidth)
+      rect.setAttribute('height', groupHeight)
+      rect.setAttribute('fill', 'yellow')
+      rect.setAttribute('stroke', 'black')
+      branchG.setAttribute('transform', `translate(${paddingX}, ${paddingY})`)
+      g.appendChild(rect)
+      g.appendChild(branchG)
 
+      return {
+        g: g,
+        width: groupWidth,
+        height: groupHeight
+      }
     }
   </script>
+  <!--    let res = draw(parseRegex('mjc')[0])
+          svg.appendChild(res.g)
+  -->
 </body>
 
 </html>
