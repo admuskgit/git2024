@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ipv4 trans unint32</title>
+  <style>
+    body {
+      background: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function ipv4(ip) {
+      let sum = 0
+      let part = []
+      part = ip.split('.').map(it => Number(it))
+      for (let i = 0; i < part.length; i++) {
+        sum += part[i] * 256 ** (part.length - 1 - i)
+      }
+      console.log(sum)
+    }
+  </script>
+</body>
+
+</html>
