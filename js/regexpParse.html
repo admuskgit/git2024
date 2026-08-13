@@ -274,14 +274,18 @@
     svg.setAttribute('width', '500')
     svg.setAttribute('height', '500')
     function drawcharSinglechar(node) {
+      console.log('drawCharacter 被调用', node)
+      let width = 20
+      let height = 20
       let g = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'g')
       let rect = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'rect')
-      rect.setAttribute('width', '20')
-      rect.setAttribute('height', '20')
+      console.log(rect)
+      rect.setAttribute('width', width)
+      rect.setAttribute('height', height)
       rect.setAttribute('rx', '5')
       rect.setAttribute('ry', '5')
       rect.setAttribute('fill', 'blue')
@@ -290,18 +294,18 @@
       let text = document.createElementNS(
         'http://www.w3.org/2000/svg',
         'text')
-      text.setAttribute('x', '10')
-      text.setAttribute('y', '10')
+      text.setAttribute('x', width / 2)
+      text.setAttribute('y', height / 2)
       text.setAttribute('text-anchor', 'middle')
       text.setAttribute('dominant-baseline', 'central')
       text.setAttribute('font-size', '10')
       text.textContent = node.character
       g.appendChild(rect)
       g.appendChild(text)
-      let width = 24
-      let height = 24
+      g.setAttribute('transform', 'translate(50, 50)')
+      svg.appendChild(g)
       return {
-        g: g,
+        ele: g,
         width: width,
         height: height,
       }
@@ -372,8 +376,11 @@
       }
     }
   </script>
-  <!--    let res = draw(parseRegex('(jin)')[0])
-          svg.appendChild(res.g)
+  <!-- 
+  单字符测试parseRegex('d')[0].element[0]
+
+  let res = draw(parseRegex('(jin)')[0])
+  svg.appendChild(res.g)
   -->
 </body>
 
