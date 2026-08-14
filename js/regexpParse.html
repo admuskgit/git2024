@@ -274,16 +274,10 @@
     svg.setAttribute('width', '500')
     svg.setAttribute('height', '500')
     function drawcharSinglechar(node) {
-      console.log('drawCharacter 被调用', node)
       let width = 20
       let height = 20
-      let g = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'g')
-      let rect = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'rect')
-      console.log(rect)
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
       rect.setAttribute('width', width)
       rect.setAttribute('height', height)
       rect.setAttribute('rx', '5')
@@ -291,9 +285,7 @@
       rect.setAttribute('fill', 'blue')
       rect.setAttribute('stroke', 'green')
       rect.setAttribute('stroke-width', '1')
-      let text = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'text')
+      let text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
       text.setAttribute('x', width / 2)
       text.setAttribute('y', height / 2)
       text.setAttribute('text-anchor', 'middle')
@@ -302,8 +294,8 @@
       text.textContent = node.character
       g.appendChild(rect)
       g.appendChild(text)
-      g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
+      //g.setAttribute('transform', 'translate(50, 50)')
+      //svg.appendChild(g)
       return {
         ele: g,
         width: width,
@@ -323,44 +315,61 @@
 
     }
     function drawbranch(node) {
-      let g = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'g')
-      let x = 2
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let gap = 20
+      let x = 0
+      let H = 0
+      let W = 0
       for (let i = 0; i < node.element.length; i++) {
         let childc = draw(node.element[i])
-        let child = childc.g
-        g.appendChild(child)
-        child.setAttribute('transform', `translate(${x}, 2)`)
-        if (i !== node.element.length - 1) {
-          let line = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'line')
-          line.setAttribute('x1', x + 22)
-          line.setAttribute('y1', '12')
-          line.setAttribute('x2', x + 46)
-          line.setAttribute('y2', '12')
-          line.setAttribute('stroke', 'red')
-          line.setAttribute('stroke-width', '1')
-          g.appendChild(line)
+        if (childc.height > H) {
+          H = childc.height
         }
-        x += 20 + 20 + 4 + 4
-        //框框是20，宽度是4，宽度以线条中心分别向内向外拓展2，看起来总宽是24
+        let child = childc.ele
+        child.setAttribute('transform', `translate(${x}, 0)`)
+        g.appendChild(child)
+        if (i !== node.element.length - 1) {
+          let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          line.setAttribute('x1', x + childc.width)
+          line.setAttribute('y1', childc.height / 2)
+          line.setAttribute('x2', x + childc.width + gap)
+          line.setAttribute('y2', childc.height / 2)
+          line.setAttribute('stroke', 'red')
+          line.setAttribute('stroke-width', 1)
+          g.appendChild(line)
+          x += childc.width + gap
+        } else {
+          x += childc.width
+        }
       }
+      let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      leftline.setAttribute('x1', - gap)
+      leftline.setAttribute('y1', H / 2)
+      leftline.setAttribute('x2', 0)
+      leftline.setAttribute('y2', H / 2)
+      leftline.setAttribute('stroke', 'red')
+      leftline.setAttribute('stroke-width', 1)
+      g.appendChild(leftline)
+      let rightline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      rightline.setAttribute('x1', x)
+      rightline.setAttribute('y1', H / 2)
+      rightline.setAttribute('x2', x + gap)
+      rightline.setAttribute('y2', H / 2)
+      rightline.setAttribute('stroke', 'red')
+      rightline.setAttribute('stroke-width', 1)
+      g.appendChild(rightline)
+      g.setAttribute('transform', 'translate(50, 50)')
+      svg.appendChild(g)
       return {
         g: g,
-        width: x,
-        height: 24,
+        width: x + gap * 2,
+        height: H,
       }
     }
     function drawGroup(node) {
-      let g = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'g')
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let branch = draw(node.branches[0])
-      let rect = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'rect')
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
       let padding = 1
       rect.setAttribute('x', -1)
       rect.setAttribute('y', -1)
@@ -378,7 +387,6 @@
   </script>
   <!-- 
   单字符测试parseRegex('d')[0].element[0]
-
   let res = draw(parseRegex('(jin)')[0])
   svg.appendChild(res.g)
   -->
