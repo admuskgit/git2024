@@ -318,6 +318,7 @@
       let y = 0
       let H = 0
       let W = 0
+      let yc = 0
       let branchess = []
       for (let i = 0; i < node.length; i++) {
         let childc = drawbranch(node[i])
@@ -335,6 +336,68 @@
         let childc = branchess[i]
         let child = childc.ele
         child.setAttribute('transform', `translate(${gap + (W - childc.width) / 2}, ${y})`)
+        if (childc.width < W) {
+          let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          leftline.setAttribute('x1', gap)
+          leftline.setAttribute('y1', y + childc.height / 2)
+          leftline.setAttribute('x2', gap + (W - childc.width) / 2)
+          leftline.setAttribute('y2', y + childc.height / 2)
+          leftline.setAttribute('stroke', 'yellow')
+          leftline.setAttribute('stroke-width', 1)
+          g.appendChild(leftline)
+          let righttline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          righttline.setAttribute('x1', gap + (W - childc.width) / 2 + childc.width)
+          righttline.setAttribute('y1', y + childc.height / 2)
+          righttline.setAttribute('x2', W + gap)
+          righttline.setAttribute('y2', y + childc.height / 2)
+          righttline.setAttribute('stroke', 'yellow')
+          righttline.setAttribute('stroke-width', 1)
+          g.appendChild(righttline)
+        }
+        if (y + childc.height / 2 < H / 2) {
+          let lPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          lPath.setAttribute('d', `M 0 ${H / 2} C ${gap} ${H / 2}, 0 ${y + childc.height / 2}, ${gap} ${y + childc.height / 2}`)
+          lPath.setAttribute('fill', 'none')
+          lPath.setAttribute('stroke', 'red')
+          lPath.setAttribute('stroke-width', '1')
+          g.appendChild(lPath)
+          let rPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          rPath.setAttribute('d', `M ${W + gap} ${y + childc.height / 2} C ${gap + W + gap} ${y + childc.height / 2}, ${W + gap} ${H / 2}, ${gap + W + gap} ${H / 2}`)
+          rPath.setAttribute('fill', 'none')
+          rPath.setAttribute('stroke', 'red')
+          rPath.setAttribute('stroke-width', '1')
+          g.appendChild(rPath)
+        } else if (y + childc.height / 2 > H / 2) {
+          let lPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          lPath.setAttribute('d', `M 0 ${H / 2} C ${gap} ${H / 2}, 0 ${y + childc.height / 2}, ${gap} ${y + childc.height / 2}`)
+          lPath.setAttribute('fill', 'none')
+          lPath.setAttribute('stroke', 'blue')
+          lPath.setAttribute('stroke-width', '1')
+          g.appendChild(lPath)
+          let rPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          rPath.setAttribute('d', `M ${W + gap} ${y + childc.height / 2} C ${gap + W + gap} ${y + childc.height / 2}, ${W + gap} ${H / 2}, ${gap + W + gap} ${H / 2}`)
+          rPath.setAttribute('fill', 'none')
+          rPath.setAttribute('stroke', 'blue')
+          rPath.setAttribute('stroke-width', '1')
+          g.appendChild(rPath)
+        } else {
+          let lLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          lLine.setAttribute('x1', 0)
+          lLine.setAttribute('y1', H / 2)
+          lLine.setAttribute('x2', gap)
+          lLine.setAttribute('y2', H / 2)
+          lLine.setAttribute('stroke', 'green')
+          lLine.setAttribute('stroke-width', 1)
+          g.appendChild(lLine)
+          let rline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          rline.setAttribute('x1', gap + W)
+          rline.setAttribute('y1', H / 2)
+          rline.setAttribute('x2', gap + W + gap)
+          rline.setAttribute('y2', H / 2)
+          rline.setAttribute('stroke', 'green')
+          rline.setAttribute('stroke-width', 1)
+          g.appendChild(rline)
+        }
         g.appendChild(child)
         if (i !== branchess.length - 1) {
           y += childc.height + gap
