@@ -126,7 +126,7 @@
       }
       function characterClass() {
         let node = {
-          type: 'characterClass',
+          type: 'CharacterClass',
           start: i,
           end: 0,
           raw: '',
@@ -161,7 +161,7 @@
       }
       function branch() {
         let node = {
-          type: 'branch',
+          type: 'Branch',
           start: i,
           end: 0,
           raw: '',
@@ -260,10 +260,10 @@
       if (node.type === 'Quantifier') {
         return drawQuantifier(node)
       }
-      if (node.type === 'characterClass') {
+      if (node.type === 'CharacterClass') {
         return drawcharacterClass(node)
       }
-      if (node.type === 'branch') {
+      if (node.type === 'Branch') {
         return drawbranch(node)
       }
       if (node.type === 'Group') {
@@ -271,8 +271,8 @@
       }
     }
     let svg = document.querySelector('svg')
-    svg.setAttribute('width', '500')
-    svg.setAttribute('height', '500')
+    svg.setAttribute('width', '1000')
+    svg.setAttribute('height', '1000')
     function drawcharSinglechar(node) {
       let width = 20
       let height = 20
@@ -312,7 +312,43 @@
 
     }
     function drawbranchess(node) {
-
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let gap = 20
+      let x = 0
+      let y = 0
+      let H = 0
+      let W = 0
+      let branchess = []
+      for (let i = 0; i < node.length; i++) {
+        let childc = drawbranch(node[i])
+        branchess.push(childc)
+        if (childc.width > W) {
+          W = childc.width
+        }
+        if (i !== node.length - 1) {
+          H += childc.height + gap
+        } else {
+          H += childc.height
+        }
+      }
+      for (let i = 0; i < branchess.length; i++) {
+        let childc = branchess[i]
+        let child = childc.ele
+        child.setAttribute('transform', `translate(${gap + (W - childc.width) / 2}, ${y})`)
+        g.appendChild(child)
+        if (i !== branchess.length - 1) {
+          y += childc.height + gap
+        } else {
+          y += childc.height
+        }
+      }
+      g.setAttribute('transform', 'translate(50, 50)')
+      svg.appendChild(g)
+      return {
+        ele: g,
+        width: W + gap * 2,
+        height: H
+      }
     }
     function drawbranch(node) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
@@ -342,27 +378,9 @@
           x += childc.width
         }
       }
-      let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-      leftline.setAttribute('x1', - gap)
-      leftline.setAttribute('y1', H / 2)
-      leftline.setAttribute('x2', 0)
-      leftline.setAttribute('y2', H / 2)
-      leftline.setAttribute('stroke', 'red')
-      leftline.setAttribute('stroke-width', 1)
-      g.appendChild(leftline)
-      let rightline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-      rightline.setAttribute('x1', x)
-      rightline.setAttribute('y1', H / 2)
-      rightline.setAttribute('x2', x + gap)
-      rightline.setAttribute('y2', H / 2)
-      rightline.setAttribute('stroke', 'red')
-      rightline.setAttribute('stroke-width', 1)
-      g.appendChild(rightline)
-      g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
-        g: g,
-        width: x + gap * 2,
+        ele: g,
+        width: x,
         height: H,
       }
     }
@@ -379,17 +397,12 @@
       g.appendChild(rect)
       g.appendChild(branch.g)
       return {
-        g: g,
+        ele: g,
         width: branch.width + 2,
         height: branch.height + 2
       }
     }
   </script>
-  <!-- 
-  单字符测试parseRegex('d')[0].element[0]
-  let res = draw(parseRegex('(jin)')[0])
-  svg.appendChild(res.g)
-  -->
 </body>
 
 </html>
