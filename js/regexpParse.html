@@ -449,20 +449,23 @@
     }
     function drawGroup(node) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      let branch = draw(node.branches[0])
+      let childc = drawbranchess(node.branches)
+      let padding = 2
       let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-      let padding = 1
-      rect.setAttribute('x', -1)
-      rect.setAttribute('y', -1)
-      rect.setAttribute('width', branch.width - 24)
-      rect.setAttribute('height', branch.height + 2)
-      rect.setAttribute('fill', 'yellow')
+      rect.setAttribute('x', 50 - padding)
+      rect.setAttribute('y', 50 - padding)
+      rect.setAttribute('width', childc.width + padding * 2)
+      rect.setAttribute('height', childc.height + padding * 2)
+      rect.setAttribute('stroke', 'red')
+      rect.setAttribute('fill', 'none')
+      rect.setAttribute('stroke-dasharray', '2, 2')
       g.appendChild(rect)
-      g.appendChild(branch.g)
+      g.appendChild(childc.ele)
+      svg.appendChild(g)
       return {
         ele: g,
-        width: branch.width + 2,
-        height: branch.height + 2
+        width: childc.width + padding * 2,
+        height: childc.height + padding * 2
       }
     }
   </script>
