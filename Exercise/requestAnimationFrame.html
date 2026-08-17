@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>requestAnimationFrame</title>
+</head>
+<style>
+  body {
+    background-color: gray;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+</style>
+
+<body>
+  <div class="box" style="border: 1px solid aqua; width: 50px;height: 50px; position: relative;;"></div>
+  <div style="border: 1px solid aqua; width: 1000px; height: 10px;"></div>
+  <script>
+    let box = document.querySelector('.box')
+    let direction = 1
+    function move() {
+      console.log(
+        'offsetLeft:', box.offsetLeft,
+        'style.left:', box.style.left
+      )
+      if (box.offsetLeft >= 1000 - 50) {
+        direction = - 1
+      }
+      if (box.offsetLeft <= 0) {
+        direction = 1
+      }
+      //没加margin: 0;之前，当8 * direction的时候，到达右边界盒子不动了，只要小于8 * direction，就会一直往右，边界内速度快，边界外速度慢了；当大于8 * direction的时候会往回走，但是速度慢。相对定位，绝对定位
+      box.style.left = box.offsetLeft + 9 * direction + 'px'
+      requestAnimationFrame(move)
+    }
+    move()
+    //requestAnimationFrame(move)
+  </script>
+</body>
+<!-- 第一步：加console.log -->
+<!-- 第二步：加debugger; -->
+<!-- 第三步：加了margin: 0; -->
+
+</html>

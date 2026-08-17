@@ -1,17 +1,37 @@
-<p style="text-align: center; margin-top: 300px;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Cat_August_2010-3.jpg" style="position: relative; width: 200px;">
-</p>
-<script>
-  var cat = document.querySelector("img")
-  var angle = 0, lastTime = null
-  function animate(time) {
-    if (lastTime != null) {
-      angle += (time - lastTime) * 0.0015
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>animate</title>
+  <style>
+    body {
+      background-color: gray;
     }
-    lastTime = time
-    cat.style.top = (Math.sin(angle) * 200) + "px"
-    cat.style.left = (Math.cos(angle) * 400) + "px"
+  </style>
+</head>
+
+<body>
+  <p style="text-align: center; margin-top: 200px; border: 1px solid aqua">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Cat_August_2010-3.jpg"
+      style="position: relative; width: 200px;">
+  </p>
+  <div style="border: 1px solid aqua">丧彪</div>
+  <script>
+    var cat = document.querySelector("img")
+    var angle = 0, lastTime = null
+    function animate(time) {
+      if (lastTime != null) {
+        angle += (time - lastTime) * 0.002
+      }
+      lastTime = time
+      cat.style.top = (Math.sin(angle) * 200) + "px"
+      cat.style.left = (Math.cos(angle) * 200) + "px"
+      requestAnimationFrame(animate)
+    }
     requestAnimationFrame(animate)
-  }
-  requestAnimationFrame(animate)
-</script>
+  </script>
+</body>
+
+</html>
