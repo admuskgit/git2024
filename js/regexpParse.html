@@ -271,8 +271,8 @@
       }
     }
     let svg = document.querySelector('svg')
-    svg.setAttribute('width', '1000')
-    svg.setAttribute('height', '1000')
+    svg.setAttribute('width', '500')
+    svg.setAttribute('height', '500')
     function drawcharSinglechar(node) {
       let width = 20
       let height = 20
@@ -295,7 +295,7 @@
       g.appendChild(rect)
       g.appendChild(text)
       //g.setAttribute('transform', 'translate(50, 50)')
-      //svg.appendChild(g)
+      svg.appendChild(g)
       return {
         ele: g,
         width: width,
@@ -309,7 +309,71 @@
 
     }
     function drawcharacterClass(node) {
-
+      let W = 0
+      let H = 0
+      let padding = 20
+      let gap = 0
+      let y = gap
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let Class = []
+      for (let i = 0; i < node.characterclass.length; i++) {
+        console.log(node.characterclass)//错误调试没加[i]
+        console.log("i =", i, "当前元素 =", node.characterclass[i])
+        let childc = drawcharSinglechar(node.characterclass[i])//传参错误，不是node.characterclass整个数组，
+        Class.push(childc)
+        if (childc.width > W) {
+          W = childc.width
+        }
+        if (i !== node.characterclass.length - 1) {
+          H += childc.height + gap
+        } else {
+          H += childc.height
+        }
+      }
+      for (let i = 0; i < Class.length; i++) {
+        let childc = Class[i]
+        let child = childc.ele
+        child.setAttribute('transform', `translate(${gap}, ${y})`)
+        if (i !== Class.length - 1) {
+          y += childc.height + gap
+        } else {
+          y += childc.height
+        }
+        g.appendChild(child)
+      }
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('x', 0)
+      rect.setAttribute('y', 0)
+      rect.setAttribute('width', W + gap * 2)
+      rect.setAttribute('height', H + gap * 2)
+      rect.setAttribute('stroke', 'aqua')
+      rect.setAttribute('fill', 'none')
+      rect.setAttribute('rx', '5')
+      rect.setAttribute('ry', '5')
+      let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      leftline.setAttribute('x1', 0)
+      leftline.setAttribute('y1', H / 2)
+      leftline.setAttribute('x2', - padding)
+      leftline.setAttribute('y2', H / 2)
+      leftline.setAttribute('stroke', 'yellow')
+      leftline.setAttribute('stroke-width', 1)
+      g.appendChild(leftline)
+      let righttline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      righttline.setAttribute('x1', padding)
+      righttline.setAttribute('y1', H / 2)
+      righttline.setAttribute('x2', W + padding)
+      righttline.setAttribute('y2', H / 2)
+      righttline.setAttribute('stroke', 'yellow')
+      righttline.setAttribute('stroke-width', 1)
+      g.appendChild(righttline)
+      g.setAttribute('transform', 'translate(50, 50)')
+      g.appendChild(rect)
+      svg.appendChild(g)
+      return {
+        ele: g,
+        width: W + gap * 2,
+        height: H
+      }
     }
     function drawbranchess(node) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
