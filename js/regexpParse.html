@@ -317,8 +317,13 @@
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let Class = []
       for (let i = 0; i < node.characterclass.length; i++) {
-        console.log(node.characterclass)//错误调试没加[i]
+        console.log(node.characterclass)//错误调试没加[i]，没意识到打印结果，这个值的形态是否符合我的预期
         console.log("i =", i, "当前元素 =", node.characterclass[i])
+        console.log({
+          i,
+          all: node.characterclass,
+          current: node.characterclass[i]
+        })
         let childc = drawcharSinglechar(node.characterclass[i])//传参错误，不是node.characterclass整个数组，
         Class.push(childc)
         if (childc.width > W) {
