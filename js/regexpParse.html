@@ -332,7 +332,57 @@
       }
     }
     function drawQuantifier(node) {
-
+      let gap = 20
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let childc = draw(node.repeatElement)
+      g.appendChild(childc.ele)
+      console.log(childc)
+      console.log(node)
+      if (node.min === 1 && node.max === Infinity) {
+        let rPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        rPath.setAttribute('d', `M ${childc.width} ${childc.height / 2} C ${childc.width + gap / 2} ${childc.height / 2}, ${childc.width + gap / 2} ${childc.height / 2 + gap}, ${childc.width} ${childc.height / 2 + gap}`)
+        rPath.setAttribute('fill', 'none')
+        rPath.setAttribute('stroke', 'red')
+        rPath.setAttribute('stroke-width', '1')
+        g.appendChild(rPath)
+        let Lline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        Lline.setAttribute('x1', childc.width + gap / 2 - 3)
+        Lline.setAttribute('y1', childc.height * 3 / 4 + gap / 4)
+        Lline.setAttribute('x2', childc.width + gap / 2 - 6)
+        Lline.setAttribute('y2', childc.height * 3 / 4 + gap / 4 - 3)
+        Lline.setAttribute('stroke', 'yellow')
+        Lline.setAttribute('stroke-width', 1)
+        g.appendChild(Lline)
+        let Rline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        Rline.setAttribute('x1', childc.width + gap / 2 - 3)
+        Rline.setAttribute('y1', childc.height * 3 / 4 + gap / 4)
+        Rline.setAttribute('x2', childc.width + gap / 2)
+        Rline.setAttribute('y2', childc.height * 3 / 4 + gap / 4 - 3)
+        Rline.setAttribute('stroke', 'yellow')
+        Rline.setAttribute('stroke-width', 1)
+        g.appendChild(Rline)
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        line.setAttribute('x1', childc.width)
+        line.setAttribute('y1', childc.height / 2 + gap)
+        line.setAttribute('x2', 0)
+        line.setAttribute('y2', childc.height / 2 + gap)
+        line.setAttribute('stroke', 'yellow')
+        line.setAttribute('stroke-width', 1)
+        g.appendChild(line)
+        let lPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        lPath.setAttribute('d', `M 0 ${childc.height / 2} C ${- gap / 2} ${childc.height / 2}, ${- gap / 2} ${childc.height / 2 + gap}, 0 ${childc.height / 2 + gap}`)
+        lPath.setAttribute('fill', 'none')
+        lPath.setAttribute('stroke', 'red')
+        lPath.setAttribute('stroke-width', '1')
+        g.appendChild(lPath)
+      }
+      g.setAttribute('transform', 'translate(50, 50)')
+      svg.appendChild(g)
+      return {
+        ele: g,
+        width: childc.width + gap * 2,
+        height: childc.height + gap,
+      }
     }
     function drawcharacterClass(node) {
       let W = 0
