@@ -303,7 +303,33 @@
       }
     }
     function drawescape(node) {
-
+      let width = 20
+      let height = 20
+      let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+      let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('width', width)
+      rect.setAttribute('height', height)
+      rect.setAttribute('rx', '5')
+      rect.setAttribute('ry', '5')
+      rect.setAttribute('fill', 'blue')
+      rect.setAttribute('stroke', 'green')
+      rect.setAttribute('stroke-width', '1')
+      let text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+      text.setAttribute('x', width / 2)
+      text.setAttribute('y', height / 2)
+      text.setAttribute('text-anchor', 'middle')
+      text.setAttribute('dominant-baseline', 'central')
+      text.setAttribute('font-size', '10')
+      text.textContent = node.raw
+      g.appendChild(rect)
+      g.appendChild(text)
+      g.setAttribute('transform', 'translate(50, 50)')
+      svg.appendChild(g)
+      return {
+        ele: g,
+        width: width,
+        height: height,
+      }
     }
     function drawQuantifier(node) {
 
