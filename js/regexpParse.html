@@ -294,8 +294,6 @@
       text.textContent = node.character
       g.appendChild(rect)
       g.appendChild(text)
-      //g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
         ele: g,
         width: width,
@@ -323,8 +321,6 @@
       text.textContent = node.raw
       g.appendChild(rect)
       g.appendChild(text)
-      g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
         ele: g,
         width: width,
@@ -336,8 +332,6 @@
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let childc = draw(node.repeatElement)
       g.appendChild(childc.ele)
-      console.log(childc)
-      console.log(node)
       //a+
       if (node.min === 1 && node.max === Infinity) {
         let rPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
@@ -436,28 +430,10 @@
         Path2.setAttribute('stroke-width', '1')
         g.appendChild(Path2)
       }
-      let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-      leftline.setAttribute('x1', 0)
-      leftline.setAttribute('y1', childc.height / 2)
-      leftline.setAttribute('x2', - gap)
-      leftline.setAttribute('y2', childc.height / 2)
-      leftline.setAttribute('stroke', 'yellow')
-      leftline.setAttribute('stroke-width', 1)
-      g.appendChild(leftline)
-      let righttline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-      righttline.setAttribute('x1', childc.width)
-      righttline.setAttribute('y1', childc.height / 2)
-      righttline.setAttribute('x2', childc.width + gap)
-      righttline.setAttribute('y2', childc.height / 2)
-      righttline.setAttribute('stroke', 'yellow')
-      righttline.setAttribute('stroke-width', 1)
-      g.appendChild(righttline)
-      g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
         ele: g,
-        width: childc.width + gap * 2,
-        height: childc.height + gap,
+        width: childc.width,
+        height: childc.height,
       }
     }
     function drawcharacterClass(node) {
@@ -523,9 +499,7 @@
       righttline.setAttribute('stroke', 'yellow')
       righttline.setAttribute('stroke-width', 1)
       g.appendChild(righttline)
-      g.setAttribute('transform', 'translate(50, 50)')
       g.appendChild(rect)
-      svg.appendChild(g)
       return {
         ele: g,
         width: W + gap * 2,
@@ -626,8 +600,6 @@
           y += childc.height
         }
       }
-      //g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
         ele: g,
         width: W + gap * 2,
@@ -671,7 +643,7 @@
     function drawGroup(node) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let childc = drawbranchess(node.branches)
-      let padding = 2
+      let padding = 0
       let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
       rect.setAttribute('x', - padding)
       rect.setAttribute('y', - padding)
@@ -679,17 +651,19 @@
       rect.setAttribute('height', childc.height + padding * 2)
       rect.setAttribute('stroke', 'red')
       rect.setAttribute('fill', 'none')
-      rect.setAttribute('stroke-dasharray', '2, 2')
+      rect.setAttribute('stroke-dasharray', '1, 1')
       g.appendChild(rect)
       g.appendChild(childc.ele)
-      g.setAttribute('transform', 'translate(50, 50)')
-      svg.appendChild(g)
       return {
         ele: g,
         width: childc.width + padding * 2,
         height: childc.height + padding * 2
       }
     }
+    let ast = parseRegex('(ab)')
+    let result = drawbranchess(ast)
+    result.ele.setAttribute('transform', 'translate(50, 50)')
+    svg.appendChild(result.ele)
   </script>
 </body>
 
