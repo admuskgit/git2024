@@ -626,7 +626,7 @@
           y += childc.height
         }
       }
-      g.setAttribute('transform', 'translate(50, 50)')
+      //g.setAttribute('transform', 'translate(50, 50)')
       svg.appendChild(g)
       return {
         ele: g,
@@ -673,8 +673,8 @@
       let childc = drawbranchess(node.branches)
       let padding = 2
       let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-      rect.setAttribute('x', 50 - padding)
-      rect.setAttribute('y', 50 - padding)
+      rect.setAttribute('x', - padding)
+      rect.setAttribute('y', - padding)
       rect.setAttribute('width', childc.width + padding * 2)
       rect.setAttribute('height', childc.height + padding * 2)
       rect.setAttribute('stroke', 'red')
@@ -682,6 +682,7 @@
       rect.setAttribute('stroke-dasharray', '2, 2')
       g.appendChild(rect)
       g.appendChild(childc.ele)
+      g.setAttribute('transform', 'translate(50, 50)')
       svg.appendChild(g)
       return {
         ele: g,
