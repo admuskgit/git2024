@@ -5,11 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>regexpParse</title>
-  <style>
-    body {
-      background-color: gray;
-    }
-  </style>
 </head>
 
 <body>
@@ -282,8 +277,8 @@
       rect.setAttribute('height', height)
       rect.setAttribute('rx', '5')
       rect.setAttribute('ry', '5')
-      rect.setAttribute('fill', 'blue')
-      rect.setAttribute('stroke', 'green')
+      rect.setAttribute('fill', '#dae9e5')
+      rect.setAttribute('stroke', '#dae9e5')
       rect.setAttribute('stroke-width', '1')
       let text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
       text.setAttribute('x', width / 2)
@@ -445,13 +440,6 @@
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let Class = []
       for (let i = 0; i < node.characterclass.length; i++) {
-        console.log(node.characterclass)//错误调试没加[i]，没意识到打印结果，这个值的形态是否符合我的预期
-        console.log("i =", i, "当前元素 =", node.characterclass[i])
-        console.log({
-          i,
-          all: node.characterclass,
-          current: node.characterclass[i]
-        })
         let childc = drawcharSinglechar(node.characterclass[i])//传参错误，不是node.characterclass整个数组，
         Class.push(childc)
         if (childc.width > W) {
@@ -506,7 +494,7 @@
         height: H
       }
     }
-    function drawbranchess(node) {
+    function drawbranchess(node, content = true) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       let gap = 20
       let x = 0
@@ -530,7 +518,8 @@
       for (let i = 0; i < branchess.length; i++) {
         let childc = branchess[i]
         let child = childc.ele
-        child.setAttribute('transform', `translate(${gap + (W - childc.width) / 2}, ${y})`)
+        let offset = content ? gap : 0
+        child.setAttribute('transform', `translate(${offset + (W - childc.width) / 2}, ${y})`)
         if (childc.width < W) {
           let leftline = document.createElementNS('http://www.w3.org/2000/svg', 'line')
           leftline.setAttribute('x1', gap)
@@ -575,7 +564,7 @@
           rPath.setAttribute('stroke', 'blue')
           rPath.setAttribute('stroke-width', '1')
           g.appendChild(rPath)
-        } else {
+        } else if (content) {
           let lLine = document.createElementNS('http://www.w3.org/2000/svg', 'line')
           lLine.setAttribute('x1', 0)
           lLine.setAttribute('y1', H / 2)
@@ -602,7 +591,7 @@
       }
       return {
         ele: g,
-        width: W + gap * 2,
+        width: W + gap * 0,
         height: H
       }
     }
@@ -642,14 +631,14 @@
     }
     function drawGroup(node) {
       let g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      let childc = drawbranchess(node.branches)
-      let padding = 0
+      let childc = drawbranchess(node.branches, false)
+      let padding = 1
       let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
       rect.setAttribute('x', - padding)
       rect.setAttribute('y', - padding)
       rect.setAttribute('width', childc.width + padding * 2)
       rect.setAttribute('height', childc.height + padding * 2)
-      rect.setAttribute('stroke', 'red')
+      rect.setAttribute('stroke', 'gray')
       rect.setAttribute('fill', 'none')
       rect.setAttribute('stroke-dasharray', '1, 1')
       g.appendChild(rect)
@@ -660,7 +649,7 @@
         height: childc.height + padding * 2
       }
     }
-    let ast = parseRegex('(ab)')
+    let ast = parseRegex('(a|b)')
     let result = drawbranchess(ast)
     result.ele.setAttribute('transform', 'translate(50, 50)')
     svg.appendChild(result.ele)
