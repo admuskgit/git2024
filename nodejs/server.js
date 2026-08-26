@@ -14,9 +14,14 @@ server.on('connection', (con) => {
   con.on('data', (data) => {
     console.log('收到HTTP请求:')
     let request = data.toString()
+    console.log('全部请求:', request)
+    let body = request.split('\r\n\r\n')
+    console.log('头部:', body[0])
+    console.log('请求体:', body[1])
     let firstLine = request.split('\r\n')[0]
     let parts = firstLine.split(' ')
     let part = parts[1]
+    let method = parts[0]
     let html
     let response
     if (part === '/') {
