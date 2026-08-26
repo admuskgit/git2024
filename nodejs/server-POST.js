@@ -1,30 +1,19 @@
-//引入TCP模块
 let net = require('net')
-//创建TCP服务器
 let server = net.createServer()
-//启动服务器并监听端口
-server.listen(8080, () => {
-  console.log('服务器正在监听，时间是：', new Date())
-})
+server.listen(8080, () => { })
 let messages = []
-//监听客户端连接事件
 server.on('connection', (con) => {
-  console.log('TCP连接建立')
-  //监听并接收客户端发送的数据
   con.on('data', (data) => {
-    console.log('收到HTTP请求:')
     let request = data.toString()
-    console.log('全部请求:', request)
-    let body = request.split('\r\n\r\n')
-    console.log('头部:', body[0])
-    console.log('请求体:', body[1])
     let firstLine = request.split('\r\n')[0]
     let parts = firstLine.split(' ')
     let part = parts[1]
     let method = parts[0]
     let html
     let response
-    if (part === '/') {
+    let objURL = new URL(`http://localhost:8080${part}`)
+    let pathname = objURL.pathname
+    if (method === 'GET' && pathname === '/') {
       let list = ''
       for (let item of messages) {
         list += `
@@ -47,8 +36,9 @@ server.on('connection', (con) => {
       </html>
       `
       response = `HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${html}`
-    } else if (part.startsWith('/message')) {
-      let query = parseQuery('/message?' + body[1])
+    } else if (method === 'POST' && pathname === '/message') {
+      let body = request.split('\r\n\r\n')[1]
+      let query = parseQuery('/message?' + body)
       messages.push({
         name: query.name,
         message: query.message,
@@ -60,11 +50,9 @@ server.on('connection', (con) => {
     con.write(response)
     con.end()
   })
-  //监听客户端断开连接
   con.on('end', () => { })
 })
 function parseQuery(part) {
-  console.log('part部分', part)
   let queryString = part.split('?')[1]
   let pairs = queryString.split('&')
   let result = {}
