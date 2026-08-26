@@ -1,7 +1,15 @@
-function ajax(method, path, header, boay = '') {
+function ajax(method, path, header, body = '', callback) {
   var req = new XMLHttpRequest()
-  req.open("GET", "https://api.ipify.org/", false)
+  req.open("method", path, true)
+  for (let key in header) {
+    req.setRequestHeader(key, header[key])
+  }
+  req.onload = function () {
+    let data = JSON.parse(req.responseText)
+    callback(data)
+  }
   req.send(null)
-  console.log(req.responseText)
+  //req.send(body)
 }
+//ajax("GET", "/user", {}, "", function(data){console.log(data)})
 //path = "https://api.ipify.org/"
