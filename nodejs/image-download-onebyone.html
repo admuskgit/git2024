@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>image-download-onebyone</title>
+  <style>
+    body {
+      background: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    // https://xieranmaya.github.io/images/cats/cats.json
+    // [
+    //   {
+    //     "url": "photo-103450229.jpg",
+    //     "fullUrl": "https://xieranmaya.github.io/images/cats/photo-103450229.jpg",
+    //     "width": 675,
+    //     "height": 900
+    //   },
+    // ]
+    function downloadImage(url, callback) {
+      let img = new Image()
+      img.onload = function () {
+        callback(img)
+      }
+      img.onerror = function () {
+        callback(img)
+      }
+      img.src = url
+    }
+    function downloadOneByone(callback) {
+      let xhr = new XMLHttpRequest()
+      xhr.open('GET', 'https://xieranmaya.github.io/images/cats/cats.json')
+      xhr.onload = function () {
+        let cats = JSON.parse(xhr.responseText)
+        let i = 0
+        function next() {
+          if (i < cats.length) {
+            downloadImage(cats[i].fullUrl, function (img) {
+              i++
+              console.log(img)
+              console.log('图片下载完成')
+              next()
+            })
+          }
+        }
+      }
+      xhr.send()
+    }
+    downloadImage()
+    function downloadTwoByTwo(callback) {
+
+    }
+    function downloadMax4(callback) {
+
+    }
+  </script>
+</body>
+
+</html>
