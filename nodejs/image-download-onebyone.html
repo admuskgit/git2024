@@ -35,25 +35,33 @@
       img.src = url
     }
     function downloadOneByone(callback) {
+      console.log('downloadOneByone开始')
       let xhr = new XMLHttpRequest()
       xhr.open('GET', 'https://xieranmaya.github.io/images/cats/cats.json')
       xhr.onload = function () {
+        console.log('xhr.onload开始')
         let cats = JSON.parse(xhr.responseText)
+        console.log(cats)
         let i = 0
         function next() {
+          console.log('next开始')
           if (i < cats.length) {
+            console.log('准备下载')
             downloadImage(cats[i].fullUrl, function (img) {
               i++
               console.log(img)
               console.log('图片下载完成')
               next()
             })
+          } else {
+            callback()
           }
         }
+        next()
       }
       xhr.send()
     }
-    downloadImage()
+    downloadOneByone(function () { console.log('全部下载完成') })
     function downloadTwoByTwo(callback) {
 
     }
