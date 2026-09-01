@@ -51,82 +51,53 @@
     //tq.run()
     //多线程
     class mulTaskQueue {
-      constructor(parallelLimit = 3) {
+      constructor(parallelLimit = 2) {
         this._parallelLimit = parallelLimit
         this._tasks = []
         this._runing = 0
-      }
-      addTask(add) {
+      };
+      addTask(task) {
+        console.log('addTask之前', this._runing);
         if (this._runing < this._parallelLimit) {
           this._runing++
+          console.log('启动任务', this._runing)
           let self = this
-          add(function next() {
+          task(function next() {
             self._runing--
+            console.log('任务结束', self._runing)
             self.run()
           })
         } else {
-          this._tasks.push(add)
+          this._tasks.push(task)
         }
         return this
-      }
+      };
       run() {
-        let task = this._tasks.shift()
-        if (!task) return
+        console.log('run', this._runing, this._tasks.length)
+        //this._runing++ 放这里不对
+        let waitingTask = this._tasks.shift()
+        if (!waitingTask) return
+        this._runing++//有任务，才加1.
         let self = this
-        task(function next() {
+        waitingTask(function next() {//这个next函数，是task里的回调.我既然走到task这里了，说明我需要一个任务，已经在外面++了，这个--是在回调里面，我既然走到了回调，说明task结束，先--，在开启下一个.
+          self._runing--
           self.run()
         })
-      }
+      };
     }
     let tq1 = new mulTaskQueue()
     tq1.addTask(function task(next) {
       setTimeout(() => { console.log(1); next() }, 1000)
     }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(2); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(2); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(2); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(2); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(2); next() }, 1000)
-    }).addTask(function task(next) {
       setTimeout(() => { console.log(2); next() }, 1000)
     }).addTask(function task(next) {
       setTimeout(() => { console.log(3); next() }, 1000)
     }).addTask(function task(next) {
-      setTimeout(() => { console.log(3); next() }, 1000)
+      setTimeout(() => { console.log(4); next() }, 1000)
     }).addTask(function task(next) {
-      setTimeout(() => { console.log(3); next() }, 1000)
+      setTimeout(() => { console.log(5); next() }, 1000)
     }).addTask(function task(next) {
-      setTimeout(() => { console.log(3); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(3); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(3); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(4); next() }, 4000)
+      setTimeout(() => { console.log(6); next() }, 1000)
     })
   </script>
 </body>

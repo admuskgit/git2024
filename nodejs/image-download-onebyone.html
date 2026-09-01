@@ -57,7 +57,7 @@
       }
       xhr.send()
     }
-    downloadOneByone(function () { console.log('全部下载完成') })
+    //downloadOneByone(function () { console.log('全部下载完成') })
     //两个两个下载，都下载完才开始下一个
     function downloadTwoByTwo(callback) {
 
@@ -98,7 +98,7 @@
       }
     }
     let tq1 = new mulTaskQueue()
-    tq1.addTask(function task(next) {
+    //tq1.addTask(function task(next) {
       setTimeout(() => { console.log(1); next() }, 1000)
     }).addTask(function task(next) {
       setTimeout(() => { console.log(1); next() }, 1000)
