@@ -14,7 +14,6 @@
 
 <body>
   <script>
-
     // https://xieranmaya.github.io/images/cats/cats.json
     // [
     //   {
@@ -34,23 +33,20 @@
       }
       img.src = url
     }
+    function get() {
+
+    }
+    //一个一个下载
     function downloadOneByone(callback) {
-      console.log('downloadOneByone开始')
       let xhr = new XMLHttpRequest()
       xhr.open('GET', 'https://xieranmaya.github.io/images/cats/cats.json')
       xhr.onload = function () {
-        console.log('xhr.onload开始')
         let cats = JSON.parse(xhr.responseText)
-        console.log(cats)
         let i = 0
         function next() {
-          console.log('next开始')
           if (i < cats.length) {
-            console.log('准备下载')
             downloadImage(cats[i].fullUrl, function (img) {
               i++
-              console.log(img)
-              console.log('图片下载完成')
               next()
             })
           } else {
@@ -62,12 +58,59 @@
       xhr.send()
     }
     downloadOneByone(function () { console.log('全部下载完成') })
+    //两个两个下载，都下载完才开始下一个
     function downloadTwoByTwo(callback) {
 
     }
+    //最多同时下载多少个
     function downloadMax4(callback) {
 
     }
+    function parallelLimit(task, limit = 1, allDone) {
+
+    }
+    class mulTaskQueue {
+      constructor(parallelLimit = 3) {
+        this._parallelLimit = parallelLimit
+        this._tasks = []
+        this._runing = 0
+      }
+      addTask(add) {
+        if (this._runing < this._parallelLimit) {
+          this._runing++
+          let self = this
+          add(function next() {
+            self._runing--
+            self.run()
+          })
+        } else {
+          this._tasks.push(add)
+        }
+        return this
+      }
+      run() {
+        let task = this._tasks.shift()
+        if (!task) return
+        let self = this
+        task(function next() {
+          self.run()
+        })
+      }
+    }
+    let tq1 = new mulTaskQueue()
+    tq1.addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    }).addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    }).addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    }).addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    }).addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    }).addTask(function task(next) {
+      setTimeout(() => { console.log(1); next() }, 1000)
+    })
   </script>
 </body>
 
