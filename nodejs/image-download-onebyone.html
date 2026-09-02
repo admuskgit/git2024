@@ -69,48 +69,6 @@
     function parallelLimit(task, limit = 1, allDone) {
 
     }
-    class mulTaskQueue {
-      constructor(parallelLimit = 3) {
-        this._parallelLimit = parallelLimit
-        this._tasks = []
-        this._runing = 0
-      }
-      addTask(add) {
-        if (this._runing < this._parallelLimit) {
-          this._runing++
-          let self = this
-          add(function next() {
-            self._runing--
-            self.run()
-          })
-        } else {
-          this._tasks.push(add)
-        }
-        return this
-      }
-      run() {
-        let task = this._tasks.shift()
-        if (!task) return
-        let self = this
-        task(function next() {
-          self.run()
-        })
-      }
-    }
-    let tq1 = new mulTaskQueue()
-    //tq1.addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    }).addTask(function task(next) {
-      setTimeout(() => { console.log(1); next() }, 1000)
-    })
   </script>
 </body>
 
