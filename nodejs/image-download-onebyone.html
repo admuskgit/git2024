@@ -30,6 +30,37 @@
       xhr.onload = function () { callback(xhr) }
       xhr.send()
     }
+    function downloadMax4(done) {
+      get('https://xieranmaya.github.io/images/cats/cats.json',
+        function callback(xhr) {
+          let cats = JSON.parse(xhr.responseText)
+          let i = 0
+          let count = 0
+          function next() {
+            if (i < cats.length) {
+              count++
+              downloadImage(cats[i].fullUrl, function (img) {
+                count--
+                if (count < 4) {
+                  next()
+                }
+              })
+              i++
+              if (count < 4) {
+                next()
+              }
+            } else if (i === cats.length && count === 0) {
+              done()
+            }
+          }
+          next()
+        }
+      )
+    }
+    downloadMax4(function () { console.log('全部下载完成') })
+    function parallelLimit(task, limit = 1, allDone) {
+
+    }
     //两个两个下载，都下载完才开始下一轮
     function downloadTwoByTwo(done) {
       get('https://xieranmaya.github.io/images/cats/cats.json',
@@ -57,7 +88,7 @@
         }
       )
     }
-    downloadTwoByTwo(function () { console.log('全部下载完成') })
+    //downloadTwoByTwo(function () { console.log('全部下载完成') })
     function downloadOneByone(done) {
       get('https://xieranmaya.github.io/images/cats/cats.json',
         function callback(xhr) {
@@ -78,10 +109,6 @@
       )
     }
     //downloadOneByone(function () { console.log('全部下载完成') })
-    function downloadMax4(done) {
-    }
-    function parallelLimit(task, limit = 1, allDone) {
-    }
   </script>
 </body>
 
