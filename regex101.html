@@ -27,6 +27,10 @@
     .head {
       display: flex;
       height: 55px;
+      align-items: center;
+      padding-left: 12px;
+      padding-right: 12px;
+      background-color: #163452;
     }
 
     .both {
@@ -181,18 +185,18 @@
 <body>
   <div class="containerPro">
     <div class="head">
-      <h1>
+      <h1 class="text-2xl">
         <a href="https://www.baidu.com/">
-          <span>regular</span>
-          <span>expressions</span>
-          <span>101</span>
+          <span class="text-[#dcdcdc]">regular</span>
+          <span class="text-[#dcdcdc]">expressions</span>
+          <sub class="text-red-500 text-sm">101</sub>
         </a>
       </h1>
-      <div>
-        <button></button>
-        <button></button>
-        <button></button>
-        <button></button>
+      <div class="flex justify-end">
+        <button class="text-[#dcdcdc]">Upgrade to Pro</button>
+        <button class="text-[#dcdcdc]">Enterprise</button>
+        <button class="text-[#dcdcdc]">Sponsor</button>
+        <button class="text-[#dcdcdc]">Info</button>
       </div>
     </div>
     <div class="both">
